@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import TopNav from "@/components/TopNav";
 
 const montserrat = Montserrat({ 
   subsets: ["latin"],
@@ -20,9 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${montserrat.variable}`}>
-      <body className="antialiased font-sans h-screen flex overflow-hidden bg-background">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto relative scroll-smooth">
+      <body className="antialiased font-sans min-h-screen bg-gray-50 flex flex-col">
+        <TopNav />
+        <main className="flex-1 py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
           {children}
         </main>
       </body>
