@@ -42,7 +42,19 @@ export default async function ReportarPage() {
     .eq('ciclo_id', activeCiclo.id)
 
   // Consolidar data para el cliente
-  const indicadoresDisponibles = politicas?.map((pol: any) => {
+  const indicadoresDisponibles = politicas?.map((pol: {
+    indicador_id: string
+    alfa_exceso: number | null
+    tope_maximo: number | null
+    rango_min: number | null
+    rango_max: number | null
+    indicadores: {
+      nombre: string
+      programa_id: string
+      linea_base: number
+      es_inverso: boolean
+    }
+  }) => {
     const metaObj = metas?.find(m => m.indicador_id === pol.indicador_id)
     return {
       id: pol.indicador_id,

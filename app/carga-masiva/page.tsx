@@ -28,7 +28,10 @@ export default async function CargaMasivaPage() {
     .eq('ciclo_id', activeCiclo.id)
     .eq('pondera', true)
 
-  const indValidacion = politicas?.map((pol: any) => ({
+  const indValidacion = politicas?.map((pol: { 
+    indicador_id: string; 
+    indicadores: { nombre: string; programa_id: string; programas: { nombre: string } } 
+  }) => ({
     id: pol.indicador_id,
     nombre: pol.indicadores.nombre,
     programa_id: pol.indicadores.programa_id,
