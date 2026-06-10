@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
 
 export default function TopNav() {
   const pathname = usePathname()
@@ -12,6 +13,15 @@ export default function TopNav() {
     { name: 'Carga Masiva', href: '/carga-masiva' },
     { name: 'Configuración', href: '/admin' },
   ]
+
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
     <nav className="bg-white border-b border-gray-200">
@@ -38,6 +48,14 @@ export default function TopNav() {
                   </Link>
                 )
               })}
+            </div>
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              <button
+                onClick={handleLogout}
+                className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-red-100 hover:bg-red-700 hover:text-white transition-colors"
+              >
+                Cerrar Sesión
+              </button>
             </div>
           </div>
         </div>
