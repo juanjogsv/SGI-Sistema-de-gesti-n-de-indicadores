@@ -9,7 +9,8 @@ export default function TopNav() {
   const links = [
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Reportar', href: '/reportar' },
-    { name: 'Carga masiva', href: '/carga-masiva' },
+    { name: 'Carga Masiva', href: '/carga-masiva' },
+    { name: 'Gestión Usuarios', href: '/admin' },
   ]
 
   return (
