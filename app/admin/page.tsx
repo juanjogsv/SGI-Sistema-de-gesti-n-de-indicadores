@@ -16,12 +16,11 @@ export default async function AdminPage() {
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: userData } = await supabase
     .from('usuarios')
     .select('rol_global')
     .eq('auth_user_id', authData.user.id)
-    .single() as any
+    .single() as { rol_global: string } | null
 
   if (userData?.rol_global !== 'admin') {
     return (

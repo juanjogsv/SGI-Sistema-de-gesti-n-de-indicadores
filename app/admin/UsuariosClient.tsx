@@ -3,7 +3,15 @@
 import React, { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
-export default function UsuariosClient({ initialUsuarios }: { initialUsuarios: any[] }) {
+interface UsuarioRow {
+  id: string
+  nombre: string
+  email: string
+  activo: boolean
+  rol_global: string
+}
+
+export default function UsuariosClient({ initialUsuarios }: { initialUsuarios: UsuarioRow[] }) {
   const supabase = createClient()
   const [usuarios, setUsuarios] = useState(initialUsuarios)
   const [isSaving, setIsSaving] = useState(false)
