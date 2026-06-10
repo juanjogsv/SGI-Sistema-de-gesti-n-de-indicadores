@@ -4,9 +4,21 @@ import React, { useState } from 'react'
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import SemaforoBadge from './SemaforoBadge'
 
+import { Database } from '@/types/database'
+
 // Types
-type IndicadorRow = any // Usamos any por ahora para no atar al Schema si cambia, o se puede mapear.
-type ScoreRow = { score_ponderado: number | null, semaforo: any }
+type SemaforoNivel = Database['public']['Enums']['semaforo_enum'] | 'gris'
+
+type IndicadorRow = {
+  indicador_id: string
+  indicador: string
+  valor_real: number | null
+  c_efectivo: number | null
+  peso_estrategico: number | null
+  semaforo: SemaforoNivel
+  fecha_reporte: string | null
+}
+type ScoreRow = { score_ponderado: number | null, semaforo: SemaforoNivel }
 
 interface Props {
   programa: { id: string; nombre: string; eje_trabajo: string }
