@@ -16,11 +16,13 @@ export default async function AdminPage() {
     )
   }
 
-  const { data: userData } = await supabase
+  const { data: rawData } = await supabase
     .from('usuarios')
     .select('rol_global')
     .eq('auth_user_id', authData.user.id)
-    .single() as { rol_global: string } | null
+    .single()
+
+  const userData = rawData as { rol_global: string } | null
 
   if (userData?.rol_global !== 'admin') {
     return (
