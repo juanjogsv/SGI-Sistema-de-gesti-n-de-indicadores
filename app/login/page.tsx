@@ -24,7 +24,9 @@ export default function LoginPage() {
     })
 
     if (signInError) {
-      setError('Credenciales incorrectas. Verifica tu correo y contraseña.')
+      setError(signInError.message === 'Email not confirmed' 
+        ? 'Debes confirmar tu correo electrónico. Revisa tu bandeja de entrada o desactiva la confirmación de correos en la configuración de Supabase (Authentication > Providers > Email).' 
+        : signInError.message)
       setLoading(false)
       return
     }
