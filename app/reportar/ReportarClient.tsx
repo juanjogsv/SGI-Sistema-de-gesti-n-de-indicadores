@@ -66,6 +66,7 @@ export default function ReportarClient({ cicloId, programas, indicadores }: Prop
       setLoadingUltimoDato(false)
     }
     fetchUltimo()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedIndicadorId, cicloId])
 
   // Lógica de cálculo en tiempo real

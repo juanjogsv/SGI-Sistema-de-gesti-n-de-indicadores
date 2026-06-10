@@ -84,7 +84,7 @@ export default function CargaMasivaClient({ cicloId, validacionData }: Props) {
         const ws = wb.Sheets[wsname]
         const data = XLSX.utils.sheet_to_json(ws) as Record<string, string | number>[]
 
-        const validadas: ParsedRow[] = data.map((row, i) => {
+        const validadas: ParsedRow[] = data.map((row) => {
           const r: ParsedRow = {
             programa: String(row.programa || ''),
             indicador: String(row.indicador || ''),
@@ -133,7 +133,7 @@ export default function CargaMasivaClient({ cicloId, validacionData }: Props) {
         })
 
         setRows(validadas)
-      } catch (err) {
+      } catch {
         alert("Error procesando el archivo. Asegúrese de usar la plantilla.")
       } finally {
         setIsProcessing(false)
