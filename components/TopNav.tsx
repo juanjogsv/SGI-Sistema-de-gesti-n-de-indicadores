@@ -10,7 +10,7 @@ export default function TopNav() {
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Reportar', href: '/reportar' },
     { name: 'Carga Masiva', href: '/carga-masiva' },
-    { name: 'Gestión Usuarios', href: '/admin' },
+    { name: 'Configuración', href: '/admin' },
   ]
 
   return (
