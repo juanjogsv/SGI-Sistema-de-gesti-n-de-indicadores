@@ -74,6 +74,7 @@ export default async function ReportarPage() {
       <div className="px-4 sm:px-6">
         <ReportarClient 
           cicloId={activeCiclo.id}
+          programas={programas || []}
           indicadores={indicadoresDisponibles || []}
         />
       </div>
