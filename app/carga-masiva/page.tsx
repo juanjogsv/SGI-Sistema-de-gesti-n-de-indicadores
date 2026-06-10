@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import CargaMasivaClient from './CargaMasivaClient'
+import PageHeader from '@/components/PageHeader'
+import { FileSpreadsheet } from 'lucide-react'
 
 export default async function CargaMasivaPage() {
   const supabase = createClient()
@@ -41,16 +43,20 @@ export default async function CargaMasivaPage() {
   }) || []
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
-       <header className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Carga Masiva</h1>
-        <p className="text-gray-500 mt-2 text-sm font-medium">Sube múltiples reportes a través de Excel • Ciclo: {activeCiclo.nombre}</p>
-      </header>
-      
-      <CargaMasivaClient 
-        cicloId={activeCiclo.id} 
-        validacionData={indValidacion} 
+    <div className="max-w-[1400px] mx-auto pb-12 animate-in fade-in duration-500">
+      <PageHeader 
+        title="Carga Masiva" 
+        description="Descarga la plantilla Excel con todos los indicadores, diligencia los datos y súbela al sistema."
+        Icon={FileSpreadsheet}
+        iconBgColor="bg-luker-green"
       />
+      
+      <div className="px-4 sm:px-6">
+        <CargaMasivaClient 
+          cicloId={activeCiclo.id} 
+          validacionData={indValidacion}
+        />
+      </div>
     </div>
   )
 }

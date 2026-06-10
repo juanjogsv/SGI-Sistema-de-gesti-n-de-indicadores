@@ -1,10 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --luker-brown: 28 100% 8%;
+    --luker-green: 122 56% 51%;
+    --luker-orange: 37 97% 62%;
+    --luker-red: 0 84% 59%;
+    --luker-teal: 180 100% 34%;
+    
+    --background: 0 0% 99%;
+    --foreground: 28 100% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 28 100% 8%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 28 100% 8%;
+    --primary: 28 100% 8%;
+    --primary-foreground: 0 0% 99%;
+    --secondary: 122 56% 51%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 37 97% 62%;
+    --accent-foreground: 28 100% 8%;
+    --destructive: 0 84% 59%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 28 100% 8%;
+    --radius: 0.75rem;
+  }
+  
+  .dark {
+    --luker-brown: 28 100% 8%;
+    --luker-green: 122 56% 51%;
+    --luker-orange: 37 97% 62%;
+    --luker-red: 0 84% 59%;
+    --luker-teal: 180 100% 34%;
+    
+    --background: 28 50% 5%;
+    --foreground: 0 0% 99%;
+    --card: 28 50% 8%;
+    --card-foreground: 0 0% 99%;
+    --popover: 28 50% 8%;
+    --popover-foreground: 0 0% 99%;
+    --primary: 0 0% 99%;
+    --primary-foreground: 28 100% 8%;
+    --secondary: 122 56% 51%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 28 50% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 37 97% 62%;
+    --accent-foreground: 0 0% 99%;
+    --destructive: 0 84% 59%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 28 50% 15%;
+    --input: 28 50% 15%;
+    --ring: 0 0% 99%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
-    @apply bg-background text-foreground antialiased selection:bg-brand-500 selection:text-white;
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Montserrat', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', system-ui, sans-serif;
   }
 }
 

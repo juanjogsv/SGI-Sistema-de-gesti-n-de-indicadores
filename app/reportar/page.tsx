@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import ReportarClient from './ReportarClient'
+import PageHeader from '@/components/PageHeader'
+import { FileEdit } from 'lucide-react'
 
 export default async function ReportarPage() {
   const supabase = createClient()
@@ -61,17 +63,20 @@ export default async function ReportarPage() {
 
   // Pasar datos al cliente
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-      <header className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Ingreso Individual</h1>
-        <p className="text-gray-500 mt-2 text-sm font-medium">Reporte de indicadores • Ciclo: {activeCiclo.nombre}</p>
-      </header>
-      
-      <ReportarClient 
-        cicloId={activeCiclo.id}
-        programas={programas || []} 
-        indicadores={indicadoresDisponibles} 
+    <div className="max-w-[1400px] mx-auto pb-12 animate-in fade-in duration-500">
+      <PageHeader 
+        title="Reporte Manual" 
+        description="Ingresa datos para un indicador específico en el ciclo activo."
+        Icon={FileEdit}
+        iconBgColor="bg-luker-orange"
       />
+      
+      <div className="px-4 sm:px-6">
+        <ReportarClient 
+          cicloId={activeCiclo.id}
+          indicadores={indicadoresDisponibles || []}
+        />
+      </div>
     </div>
   )
 }

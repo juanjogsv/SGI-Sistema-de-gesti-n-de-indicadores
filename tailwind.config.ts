@@ -6,40 +6,72 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: ["class"],
   theme: {
     extend: {
       fontFamily: {
         sans: ['var(--font-montserrat)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-montserrat)', 'system-ui', 'sans-serif'],
       },
       colors: {
-        background: "#F8FAFC",
-        foreground: "#0F172A",
-        brand: {
-          50: '#F0F9FF',
-          100: '#E0F2FE',
-          500: '#1F4E79', // Azul Luker (Semaforo Azul)
-          600: '#1A4368',
-          700: '#143857',
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        
+        luker: {
+          brown: "hsl(var(--luker-brown))",
+          green: "hsl(var(--luker-green))",
+          orange: "hsl(var(--luker-orange))",
+          red: "hsl(var(--luker-red))",
+          teal: "hsl(var(--luker-teal))",
         },
-        semantic: {
-          success: '#375623', // Verde
-          warning: '#BF8F00', // Amarillo
-          alert: '#7F5B00',   // Amarillo Oscuro
-          error: '#C00000',   // Rojo
-          critical: '#7B0000',// Rojo Critico
-        }
+        
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        'glass': '0 4px 30px rgba(0, 0, 0, 0.05)',
-        'card': '0 10px 25px -5px rgba(0, 0, 0, 0.02), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
-        'hover': '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01)',
+        'card': '0 2px 8px -2px hsl(0 0% 0% / 0.06)',
+        'card-hover': '0 8px 24px -4px hsl(0 0% 0% / 0.12)',
       },
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%)',
+        'luker-gradient': 'linear-gradient(135deg, hsl(0 0% 99%) 0%, hsl(0 0% 97%) 100%)',
+        'luker-accent-gradient': 'linear-gradient(135deg, hsl(122 56% 95%) 0%, hsl(37 97% 95%) 100%)',
       }
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 export default config;

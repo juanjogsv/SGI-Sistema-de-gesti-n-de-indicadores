@@ -1,6 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import AdminClient from './AdminClient'
 import UsuariosClient from './UsuariosClient'
+import PageHeader from '@/components/PageHeader'
+import { Settings } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = createClient()
@@ -47,15 +49,23 @@ export default async function AdminPage() {
     .order('creado_en', { ascending: true })
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
-      <header className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Panel de Configuración</h1>
-        <p className="text-gray-500 mt-2 text-sm font-medium">Gestión de Ciclos y Usuarios de la Plataforma (Acceso Exclusivo)</p>
-      </header>
+    <div className="max-w-[1400px] mx-auto pb-12 animate-in fade-in duration-500">
+      <PageHeader 
+        title="Configuración General" 
+        description="Gestión centralizada de ciclos operativos y permisos de usuarios en la plataforma."
+        Icon={Settings}
+        iconBgColor="bg-luker-brown"
+      />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <AdminClient initialCiclos={ciclos || []} />
-        <UsuariosClient initialUsuarios={usuarios || []} />
+      <div className="px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-start">
+          <div className="bg-card rounded-lg border border-border shadow-card hover:shadow-card-hover transition-all">
+            <AdminClient initialCiclos={ciclos || []} />
+          </div>
+          <div className="bg-card rounded-lg border border-border shadow-card hover:shadow-card-hover transition-all">
+            <UsuariosClient initialUsuarios={usuarios || []} />
+          </div>
+        </div>
       </div>
     </div>
   )

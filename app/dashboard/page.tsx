@@ -1,4 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
+import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
+import { LayoutDashboard } from 'lucide-react'
 import ProgramCard from '@/components/ProgramCard'
 import { Database } from '@/types/database'
 
@@ -82,15 +85,47 @@ export default async function DashboardPage() {
   ).length
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      
-      <header className="mb-8">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Dashboard de Seguimiento</h1>
-        <p className="text-gray-500 mt-2 text-sm font-medium">Ciclo Activo: {activeCiclo.nombre}</p>
-      </header>
+    <div className="max-w-[1400px] mx-auto pb-12 animate-in fade-in duration-500">
+      <PageHeader 
+        title="Panel Principal" 
+        description={`Bienvenido al Sistema de Gestión de Indicadores. Ciclo activo: ${activeCiclo.nombre}`}
+        Icon={LayoutDashboard}
+        iconBgColor="bg-luker-teal"
+      />
 
-      {/* 1. Barra de resumen */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 mt-8">
+        <Link href="/carga-masiva" className="group">
+          <div className="bg-card rounded-lg border border-border p-8 shadow-card hover:shadow-card-hover transition-all flex flex-col items-center text-center h-full">
+            <div className="w-16 h-16 bg-luker-green/10 text-luker-green rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <span className="text-3xl">📥</span>
+            </div>
+            <h2 className="text-xl font-black text-foreground mb-3 tracking-tight">Carga Masiva</h2>
+            <p className="text-muted-foreground font-medium text-sm">Sube datos para múltiples indicadores a la vez usando una plantilla de Excel.</p>
+          </div>
+        </Link>
+
+        <Link href="/reportar" className="group">
+          <div className="bg-card rounded-lg border border-border p-8 shadow-card hover:shadow-card-hover transition-all flex flex-col items-center text-center h-full">
+            <div className="w-16 h-16 bg-luker-orange/10 text-luker-orange rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <span className="text-3xl">✍️</span>
+            </div>
+            <h2 className="text-xl font-black text-foreground mb-3 tracking-tight">Reporte Manual</h2>
+            <p className="text-muted-foreground font-medium text-sm">Ingresa los datos de un indicador específico de forma manual y detallada.</p>
+          </div>
+        </Link>
+
+        <Link href="/admin" className="group">
+          <div className="bg-card rounded-lg border border-border p-8 shadow-card hover:shadow-card-hover transition-all flex flex-col items-center text-center h-full">
+            <div className="w-16 h-16 bg-luker-brown/10 text-luker-brown rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <span className="text-3xl">⚙️</span>
+            </div>
+            <h2 className="text-xl font-black text-foreground mb-3 tracking-tight">Configuración</h2>
+            <p className="text-muted-foreground font-medium text-sm">Administra los ciclos de operación y los permisos de los usuarios del sistema.</p>
+          </div>
+        </Link>
+      </div>
+
+      <div className="px-4 sm:px-6 mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex flex-col justify-between">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Programas Activos</p>
