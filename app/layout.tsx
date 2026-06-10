@@ -9,7 +9,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Fundata | Dashboard Ejecutivo",
+  title: "Sistema de Gestión de Indicadores",
   description: "Sistema de gestión de indicadores de la Fundación Luker",
 };
 

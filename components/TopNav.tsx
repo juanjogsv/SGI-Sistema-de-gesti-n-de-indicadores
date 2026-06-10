@@ -29,7 +29,7 @@ export default function TopNav() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-black text-[#1F4E79]">Fundata</span>
+              <span className="text-xl font-black text-luker-brown tracking-tight">Sistema de Gestión de Indicadores</span>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {links.map((link) => {
@@ -40,8 +40,8 @@ export default function TopNav() {
                     href={link.href}
                     className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                       isActive
-                        ? 'border-[#1F4E79] text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                        ? 'border-luker-orange text-luker-brown'
+                        : 'border-transparent text-muted-foreground hover:border-luker-orange/50 hover:text-luker-brown'
                     }`}
                   >
                     {link.name}
@@ -52,7 +52,7 @@ export default function TopNav() {
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <button
                 onClick={handleLogout}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-red-100 hover:bg-red-700 hover:text-white transition-colors"
+                className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-luker-red hover:bg-luker-red/10 transition-colors"
               >
                 Cerrar Sesión
               </button>
