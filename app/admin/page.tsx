@@ -8,7 +8,7 @@ export default async function AdminPage() {
   const { data: ciclos } = await supabase
     .from('ciclos')
     .select('*')
-    .order('fecha_inicio', { ascending: false })
+    .order('anio', { ascending: false })
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">

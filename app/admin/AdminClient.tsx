@@ -7,8 +7,7 @@ import { useRouter } from 'next/navigation'
 interface Ciclo {
   id: string
   nombre: string
-  fecha_inicio: string
-  fecha_fin: string
+  anio: number
   activo: boolean
 }
 
@@ -22,8 +21,7 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
 
   // Form states
   const [nombre, setNombre] = useState('')
-  const [fechaInicio, setFechaInicio] = useState('')
-  const [fechaFin, setFechaFin] = useState('')
+  const [anio, setAnio] = useState<number>(new Date().getFullYear())
 
   const handleToggleActivo = async (id: string, currentActivo: boolean) => {
     // Si ya está activo, no hacemos nada (el usuario debe activar otro para desactivar este)
@@ -49,8 +47,7 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
 
     const { data, error } = await supabase.from('ciclos').insert({
       nombre,
-      fecha_inicio: fechaInicio,
-      fecha_fin: fechaFin,
+      anio,
       activo: ciclos.length === 0 // si es el primero, lo activa por defecto
     }).select().single()
 
@@ -62,8 +59,7 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
       setCiclos([data, ...ciclos])
       setIsModalOpen(false)
       setNombre('')
-      setFechaInicio('')
-      setFechaFin('')
+      setAnio(new Date().getFullYear())
       router.refresh()
     }
   }
@@ -89,9 +85,8 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
           <table className="min-w-full text-sm text-left">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="p-4 font-semibold text-gray-600">Nombre / Año</th>
-                <th className="p-4 font-semibold text-gray-600">Fecha Inicio</th>
-                <th className="p-4 font-semibold text-gray-600">Fecha Fin</th>
+                <th className="p-4 font-semibold text-gray-600">Nombre</th>
+                <th className="p-4 font-semibold text-gray-600">Año</th>
                 <th className="p-4 font-semibold text-gray-600">Estado</th>
                 <th className="p-4 font-semibold text-gray-600 text-right">Acción</th>
               </tr>
@@ -107,8 +102,7 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
                 ciclos.map(c => (
                   <tr key={c.id} className={c.activo ? "bg-[#f0f5fa]" : "bg-white"}>
                     <td className="p-4 font-black text-gray-900">{c.nombre}</td>
-                    <td className="p-4 text-gray-600">{c.fecha_inicio}</td>
-                    <td className="p-4 text-gray-600">{c.fecha_fin}</td>
+                    <td className="p-4 text-gray-600">{c.anio}</td>
                     <td className="p-4">
                       {c.activo ? (
                         <span className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-200">
@@ -155,27 +149,15 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
                   className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Inicio</label>
-                  <input 
-                    required
-                    type="date" 
-                    value={fechaInicio}
-                    onChange={e => setFechaInicio(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">Fecha Fin</label>
-                  <input 
-                    required
-                    type="date" 
-                    value={fechaFin}
-                    onChange={e => setFechaFin(e.target.value)}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Año</label>
+                <input 
+                  required
+                  type="number" 
+                  value={anio}
+                  onChange={e => setAnio(Number(e.target.value))}
+                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                />
               </div>
               
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
