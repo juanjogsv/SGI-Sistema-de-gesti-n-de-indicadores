@@ -86,11 +86,11 @@ export default function CargaMasivaClient({ cicloId, validacionData }: Props) {
 
         const validadas: ParsedRow[] = data.map((row, i) => {
           const r: ParsedRow = {
-            programa: row.programa || '',
-            indicador: row.indicador || '',
+            programa: String(row.programa || ''),
+            indicador: String(row.indicador || ''),
             valor_real: row.valor_real,
             fecha: row.fecha,
-            observacion: row.observacion || '',
+            observacion: String(row.observacion || ''),
             isValid: true
           }
 
