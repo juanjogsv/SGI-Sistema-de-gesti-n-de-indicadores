@@ -41,27 +41,16 @@ export default async function ReportarPage() {
     .select('indicador_id, valor_meta')
     .eq('ciclo_id', activeCiclo.id)
 
-  // Consolidar data para el cliente
-  const indicadoresDisponibles = politicas?.map((pol: {
-    indicador_id: string
-    alfa_exceso: number | null
-    tope_maximo: number | null
-    rango_min: number | null
-    rango_max: number | null
-    indicadores: {
-      nombre: string
-      programa_id: string
-      linea_base: number
-      es_inverso: boolean
-    }
-  }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const indicadoresDisponibles = politicas?.map((pol: any) => {
     const metaObj = metas?.find(m => m.indicador_id === pol.indicador_id)
+    const ind = Array.isArray(pol.indicadores) ? pol.indicadores[0] : pol.indicadores
     return {
       id: pol.indicador_id,
-      nombre: pol.indicadores.nombre,
-      programa_id: pol.indicadores.programa_id,
-      linea_base: pol.indicadores.linea_base,
-      es_inverso: pol.indicadores.es_inverso,
+      nombre: ind?.nombre,
+      programa_id: ind?.programa_id,
+      linea_base: ind?.linea_base,
+      es_inverso: ind?.es_inverso,
       alfa_exceso: pol.alfa_exceso,
       tope_maximo: pol.tope_maximo,
       rango_min: pol.rango_min,

@@ -28,15 +28,17 @@ export default async function CargaMasivaPage() {
     .eq('ciclo_id', activeCiclo.id)
     .eq('pondera', true)
 
-  const indValidacion = politicas?.map((pol: { 
-    indicador_id: string; 
-    indicadores: { nombre: string; programa_id: string; programas: { nombre: string } } 
-  }) => ({
-    id: pol.indicador_id,
-    nombre: pol.indicadores.nombre,
-    programa_id: pol.indicadores.programa_id,
-    programa_nombre: pol.indicadores.programas.nombre
-  })) || []
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const indValidacion = politicas?.map((pol: any) => {
+    const ind = Array.isArray(pol.indicadores) ? pol.indicadores[0] : pol.indicadores
+    const prog = Array.isArray(ind?.programas) ? ind?.programas[0] : ind?.programas
+    return {
+      id: pol.indicador_id,
+      nombre: ind?.nombre,
+      programa_id: ind?.programa_id,
+      programa_nombre: prog?.nombre
+    }
+  }) || []
 
   return (
     <div className="max-w-6xl mx-auto space-y-8 animate-fade-in">
