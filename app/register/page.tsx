@@ -42,10 +42,10 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f0f5fa] p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden animate-fade-in">
-        <div className="bg-[#1F4E79] p-8 text-center">
+      <div className="max-w-md w-full bg-card rounded-2xl shadow-card overflow-hidden animate-in fade-in duration-500 border border-border">
+        <div className="bg-luker-brown p-8 text-center">
           <h2 className="text-3xl font-black text-white tracking-tight">Registro</h2>
-          <p className="text-blue-100 mt-2 font-medium">Crear nueva cuenta en Fundata</p>
+          <p className="text-luker-orange mt-2 font-medium">Crear nueva cuenta en Fundata</p>
         </div>
         
         <div className="p-8">
@@ -60,7 +60,7 @@ export default function RegisterPage() {
               </div>
               <button
                 onClick={() => router.push('/login')}
-                className="w-full bg-[#1F4E79] text-white font-bold py-3 rounded-lg hover:bg-[#163857] transition-colors"
+                className="w-full bg-luker-brown text-white font-bold py-3 rounded-lg hover:bg-luker-brown/90 transition-colors"
               >
                 Volver al Login
               </button>
@@ -113,14 +113,14 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-3 rounded-lg transition-colors shadow-md disabled:opacity-70 mt-2"
+                className="w-full bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-3 rounded-lg transition-colors shadow-sm disabled:opacity-70 mt-2"
               >
                 {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
               </button>
 
               <div className="mt-8 text-center text-sm text-gray-600">
                 ¿Ya tienes una cuenta?{' '}
-                <Link href="/login" className="font-bold text-[#1F4E79] hover:underline">
+                <Link href="/login" className="font-bold text-luker-green hover:underline">
                   Inicia sesión aquí
                 </Link>
               </div>
