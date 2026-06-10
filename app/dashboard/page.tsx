@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import ProgramCard from '@/components/ProgramCard'
 import { Database } from '@/types/database'
 
-type CuadroMandoRow = Database['public']['Views']['v_cuadro_mando']['Row']
 type ScoreData = {
   programa: string
   score_ponderado: number | null
