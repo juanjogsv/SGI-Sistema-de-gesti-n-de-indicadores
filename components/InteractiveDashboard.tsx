@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Semaforo from '@/components/Semaforo'
 import EvolucionChart from '@/components/EvolucionChart'
-import { Filter, Search } from 'lucide-react'
+import { Filter } from 'lucide-react'
 import { Database } from '@/types/database'
 
 type CuadroMandoRow = Database['public']['Views']['v_cuadro_mando']['Row']

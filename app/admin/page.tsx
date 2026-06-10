@@ -1,5 +1,5 @@
 import React from 'react'
-import { Users, Search, ShieldAlert, Plus } from 'lucide-react'
+import { Search, ShieldAlert, Plus } from 'lucide-react'
 
 export default function AdminPage() {
   return (

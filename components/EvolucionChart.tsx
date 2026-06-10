@@ -54,6 +54,7 @@ export default function EvolucionChart() {
       },
       tooltip: {
         callbacks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           label: function (context: any) {
             return context.parsed.y + '%'
           },
@@ -70,6 +71,7 @@ export default function EvolucionChart() {
         border: { dash: [4, 4] },
         grid: { color: 'rgba(0, 0, 0, 0.05)' },
         ticks: {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           callback: function (value: any) {
             return value + '%'
           },

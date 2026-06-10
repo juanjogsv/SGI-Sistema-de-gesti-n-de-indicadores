@@ -15,7 +15,7 @@ export function createClient() {
         set(name: string, value: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value, ...options })
-          } catch (error) {
+          } catch {
             // Este método fue llamado desde un Server Component.
             // Ignorar el error es seguro.
           }
@@ -23,7 +23,7 @@ export function createClient() {
         remove(name: string, options: CookieOptions) {
           try {
             cookieStore.set({ name, value: '', ...options })
-          } catch (error) {
+          } catch {
             // Este método fue llamado desde un Server Component.
             // Ignorar el error es seguro.
           }

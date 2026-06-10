@@ -1,5 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import InteractiveDashboard from '@/components/InteractiveDashboard'
+import { Database } from '@/types/database'
+
+interface ScoreData {
+  programa: string
+  score_ponderado: number | null
+  semaforo: Database['public']['Enums']['semaforo_enum']
+  n_activos: number
+  n_nulos: number
+  suma_pesos: number
+}
 
 export default async function DashboardPage() {
   const supabase = createClient()
@@ -29,7 +39,7 @@ export default async function DashboardPage() {
   }
 
   // 4. Calcular el Score ponderado llamando a fn_score_programa
-  const programScores: any[] = []
+  const programScores: ScoreData[] = []
   if (programas && cicloId) {
     await Promise.all(
       programas.map(async (prog) => {
