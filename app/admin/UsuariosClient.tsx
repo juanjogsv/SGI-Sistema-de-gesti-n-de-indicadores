@@ -48,7 +48,7 @@ export default function UsuariosClient({ initialUsuarios }: { initialUsuarios: U
             { key: 'email', header: 'email', required: true, type: 'string' },
             { key: 'rol_global', header: 'rol_global', required: true, type: 'string' },
           ]}
-          templateRows={usuarios.map(u => ({ email: u.email, rol_global: u.rol_global || 'lector' }))}
+          templateRows={usuarios.map(u => ({ email: u.email, rol_global: '' }))}
           onImport={async (rows) => {
             let ok = 0
             const errors: string[] = []
