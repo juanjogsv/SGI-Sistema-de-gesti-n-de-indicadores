@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 
 export default function TopNav() {
@@ -17,6 +19,13 @@ export default function TopNav() {
 
   const router = useRouter()
   const supabase = createClient()
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user)
+    })
+  }, [])
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -59,6 +68,11 @@ export default function TopNav() {
               })}
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              {user && (
+                <span className="text-sm font-medium text-luker-brown bg-muted/50 px-3 py-1.5 rounded-full border border-border">
+                  Hola, <span className="font-bold">{user.email?.split('@')[0]}</span>
+                </span>
+              )}
               <button
                 onClick={handleLogout}
                 className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-luker-red hover:bg-luker-red/10 transition-colors"
