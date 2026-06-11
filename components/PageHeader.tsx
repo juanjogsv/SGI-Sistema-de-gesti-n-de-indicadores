@@ -18,7 +18,7 @@ export default function PageHeader({
   iconTextColor = 'text-white' 
 }: PageHeaderProps) {
   return (
-    <header className="bg-white/90 border-b border-border shadow-sm sticky top-0 z-10 backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4 mb-8 flex justify-between items-center">
+    <header className="bg-white/90 border-b border-border shadow-sm backdrop-blur-sm px-4 sm:px-6 py-3 sm:py-4 mb-8 flex justify-between items-center">
       <div className="flex items-center gap-4">
         {Icon && (
           <div className={`${iconBgColor} ${iconTextColor} w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center shrink-0 shadow-sm`}>
@@ -35,16 +35,6 @@ export default function PageHeader({
             </p>
           )}
         </div>
-      </div>
-      
-      <div className="hidden sm:block shrink-0">
-        <Image 
-          src="/Logos_Fundacion_Luker/fundacion-luker-color-letra-cafe-horizontal.png" 
-          alt="Fundación Luker Logo" 
-          width={180} 
-          height={60} 
-          className="object-contain"
-        />
       </div>
     </header>
   )
