@@ -93,24 +93,25 @@ export default async function DashboardPage() {
         iconBgColor="bg-luker-teal"
       />
 
-      <div className="relative overflow-hidden bg-gradient-to-br from-luker-brown via-[#3a1d0b] to-black rounded-2xl p-8 sm:p-12 mt-8 shadow-xl border border-luker-brown/50">
-        {/* Elementos decorativos */}
-        <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-luker-orange opacity-20 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-luker-green opacity-10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-luker-teal opacity-20 rounded-full blur-2xl"></div>
-        
-        <div className="relative z-10 max-w-4xl">
-          <span className="inline-block py-1 px-4 rounded-full bg-luker-orange/20 text-luker-orange font-bold text-xs tracking-widest uppercase mb-4 border border-luker-orange/30">
-            Sistema de Gestión de Indicadores
+      <section className="relative overflow-hidden mb-12 -mx-4 sm:-mx-6 lg:-mx-8 px-6 lg:px-8 py-12 rounded-2xl shadow-sm border border-border bg-card/50">
+        <div className="absolute inset-0 bg-gradient-to-br from-luker-green/5 via-luker-orange/5 to-luker-teal/10" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-luker-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-luker-orange/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+        <div className="max-w-5xl mx-auto text-center space-y-4 relative z-10">
+          <span className="text-sm font-semibold text-white bg-gradient-to-r from-luker-green to-luker-teal px-5 py-2.5 rounded-full shadow-md inline-block uppercase tracking-wider">
+            SISTEMA DE GESTIÓN DE INDICADORES
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
-            Transformando vidas a través <br className="hidden sm:block"/> de la educación
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-luker-brown leading-tight tracking-tight mt-6">
+            Transformando vidas a través de la{' '}
+            <span className="bg-gradient-to-r from-luker-green to-luker-teal bg-clip-text text-transparent">educación</span>
           </h1>
-          <p className="text-gray-300 text-base sm:text-lg font-medium leading-relaxed max-w-2xl mt-4">
-            Movilizamos palancas para que niños y jóvenes potencien su desarrollo para una vida productiva gratificante.
+          <p className="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto mt-6">
+            <strong className="text-luker-brown font-bold">Movilizamos palancas para que niños y jóvenes</strong> potencien su desarrollo para una vida{' '}
+            <strong className="text-luker-green font-bold">productiva gratificante</strong>
           </p>
         </div>
-      </div>
+      </section>
 
       <div className="px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 mt-8">
         <Link href="/carga-masiva" className="group">

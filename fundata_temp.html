@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Datos Funluker - Dashboard</title>
+
+  <!-- Favicon: ÚNICA imagen requerida para el ícono del tab -->
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+          colors: {
+            luker: {
+              brown:  'hsl(28,100%,8%)',
+              green:  'hsl(122,56%,51%)',
+              orange: 'hsl(37,97%,62%)',
+              red:    'hsl(0,84%,59%)',
+              teal:   'hsl(180,100%,34%)',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { background: linear-gradient(135deg,hsl(0,0%,99%),hsl(0,0%,97%)); min-height:100vh; color:hsl(28,100%,8%); }
+    .modal-backdrop { backdrop-filter: blur(4px); }
+  </style>
+
+  <!-- React 18 -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+  <!-- Babel (transpila JSX en el browser) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { createClient } = supabase;
+
+    /* ── Supabase ─────────────────────────────────────────── */
+    const SUPABASE_URL = 'https://vbyrqktymwuuzdtvjruz.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZieXJxa3R5bXd1dXpkdHZqcnV6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNzA4NzcsImV4cCI6MjA5NDk0Njg3N30.W67WXmYO8f6Dy5AmbhDdOZYpltLhk0RfMqKHrYNH7uc';
+    const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    /* ── Módulos iniciales (seed) ─────────────────────────── */
+    const DEFAULT_MODULES = [
+      { title:'Fundata',             description:'Plataforma centralizada de datos institucionales.',                        icon:'database', color:'text-luker-teal',   bgColor:'bg-luker-teal/10',   url:'#' },
+      { title:'SISPAR',              description:'Sistema de Información para el Seguimiento de Programas.',                  icon:'activity', color:'text-luker-orange', bgColor:'bg-luker-orange/10', url:'#' },
+      { title:'Seguimiento Programas',description:'Micrositios dedicados al seguimiento detallado de cada programa.',          icon:'layout',   color:'text-luker-green',  bgColor:'bg-luker-green/10',  url:'https://dashboardsfl.lovable.app' },
+      { title:'Datos Abiertos',      description:'Repositorio público de datos para consulta y transparencia.',               icon:'globe',    color:'text-luker-red',    bgColor:'bg-luker-red/10',    url:'#' },
+      { title:'App Mi Junta',        description:'Plataforma de gestión e información para la junta directiva.',              icon:'users',    color:'text-luker-brown',  bgColor:'bg-luker-brown/10',  url:'https://appmijunta.fundacionluker.org.co/' },
+    ];
+
+    /* ── Opciones de íconos para el formulario ────────────── */
+    const ICON_OPTIONS = [
+      { group:'Datos y Análisis', icons:[['database','Base de datos'],['pie-chart','Gráfico circular'],['bar-chart-2','Gráfico de barras'],['activity','Actividad'],['trending-up','Tendencia']] },
+      { group:'Organización',     icons:[['users','Personas'],['graduation-cap','Educación'],['building','Institución'],['briefcase','Portafolio'],['contact','Contacto']] },
+      { group:'Plataformas',      icons:[['layout','Página web'],['globe','Mundo'],['monitor','Pantalla'],['smartphone','Móvil'],['link','Enlace']] },
+      { group:'General',          icons:[['file-text','Documento'],['folder','Carpeta'],['settings','Configuración'],['shield','Seguridad'],['home','Inicio']] },
+    ];
+
+    /* ── Hook: re-renderiza íconos Lucide en cada ciclo ───── */
+    const useLucide = () => useEffect(() => { lucide.createIcons(); });
+
+    /* ══════════════════════════════════════════════════════
+       Componentes UI primitivos
+    ══════════════════════════════════════════════════════ */
+
+    const Btn = ({ children, variant='primary', size='md', className='', href, ...props }) => {
+      const base = 'inline-flex items-center justify-center font-semibold rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luker-brown disabled:opacity-50 disabled:pointer-events-none';
+      const sizes  = { sm:'h-8 px-3 text-xs', md:'h-10 px-4 text-sm', icon:'h-10 w-10' };
+      const styles = {
+        primary: 'bg-luker-green text-white hover:bg-luker-green/90',
+        outline: 'border border-gray-200 bg-white hover:bg-gray-50 text-luker-brown',
+        ghost:   'hover:bg-gray-100 text-luker-brown',
+      };
+      const cls = `${base} ${sizes[size]} ${styles[variant]} ${className}`;
+      return href && href !== '#'
+        ? <a href={href} className={cls} {...props}>{children}</a>
+        : <button className={cls} {...props}>{children}</button>;
+    };
+
+    const Field = ({ label, children }) => (
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+        {children}
+      </div>
+    );
+
+    const inputCls = 'flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luker-green disabled:opacity-50';
+
+    /* ══════════════════════════════════════════════════════
+       Header
+    ══════════════════════════════════════════════════════ */
+
+    const Header = ({ session, onLogout }) => (
+      <header className="sticky top-0 z-50 border-b border-gray-200/80 bg-white/95 backdrop-blur-sm">
+        <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center justify-between">
+
+          {/* Logo: IMAGEN REQUERIDA */}
+          <img
+            src="Logos/Logos_Fundacion_Luker/fundacion-luker-color-letra-cafe-horizontal.png"
+            alt="Fundación Luker"
+            className="h-12 md:h-14 w-auto object-contain"
+            onError={e => e.target.style.display = 'none'}
+          />
+
+          {session && (
+            <div className="flex items-center gap-3">
+              <span className="hidden sm:block text-xs font-semibold text-luker-green bg-luker-green/10 px-3 py-1.5 rounded-full">
+                Modo Administrador
+              </span>
+              <Btn variant="ghost" size="sm" onClick={onLogout}>
+                <i data-lucide="log-out" className="w-4 h-4 mr-2"></i> Salir
+              </Btn>
+            </div>
+          )}
+        </div>
+      </header>
+    );
+
+    /* ══════════════════════════════════════════════════════
+       ModuleCard
+    ══════════════════════════════════════════════════════ */
+
+    const ModuleCard = ({ mod, session, onEdit, onDelete }) => (
+      <div className="relative rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-all duration-300 group p-8 flex flex-col h-full">
+
+        {session && (
+          <div className="absolute top-4 right-4 flex gap-1 bg-white/90 backdrop-blur-sm p-1.5 rounded-lg border border-gray-200 shadow-sm z-10">
+            <Btn variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => onEdit(mod)} title="Editar">
+              <i data-lucide="edit-2" className="w-4 h-4 text-luker-teal"></i>
+            </Btn>
+            <Btn variant="ghost" size="icon" className="h-8 w-8 p-0 hover:bg-red-50" onClick={() => onDelete(mod.id)} title="Eliminar">
+              <i data-lucide="trash-2" className="w-4 h-4 text-luker-red"></i>
+            </Btn>
+          </div>
+        )}
+
+        <div className="flex items-start justify-between mb-6">
+          <div className={`w-14 h-14 rounded-2xl ${mod.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+            <i data-lucide={mod.icon} className={`w-7 h-7 ${mod.color}`}></i>
+          </div>
+          {!session && (
+            <div className="w-10 h-10 rounded-full flex items-center justify-center">
+              <i data-lucide="arrow-up-right" className="w-5 h-5 text-gray-300 group-hover:text-luker-orange transition-colors"></i>
+            </div>
+          )}
+        </div>
+
+        <h3 className="text-2xl font-bold text-luker-brown mb-3 tracking-tight">{mod.title}</h3>
+        <p className="text-luker-brown/70 mb-10 flex-1 text-base leading-relaxed font-medium">{mod.description}</p>
+
+        <div className="mt-auto">
+          <Btn
+            href={mod.url || '#'}
+            target={mod.url && mod.url !== '#' ? '_blank' : undefined}
+            rel={mod.url && mod.url !== '#' ? 'noopener noreferrer' : undefined}
+            className="w-full shadow-sm font-bold text-[15px]"
+          >
+            Acceder al módulo
+          </Btn>
+        </div>
+      </div>
+    );
+
+    /* ══════════════════════════════════════════════════════
+       Modal wrapper genérico
+    ══════════════════════════════════════════════════════ */
+
+    const Modal = ({ children }) => (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 modal-backdrop bg-black/20">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+          {children}
+        </div>
+      </div>
+    );
+
+    const ModalClose = ({ onClose }) => (
+      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+        <i data-lucide="x" className="w-5 h-5"></i>
+      </button>
+    );
+
+    /* ══════════════════════════════════════════════════════
+       Dashboard (componente raíz)
+    ══════════════════════════════════════════════════════ */
+
+    const EMPTY_FORM = { id:null, title:'', description:'', icon:'layout', color:'text-luker-teal', bgColor:'bg-luker-teal/10', url:'#' };
+
+    const Dashboard = () => {
+      useLucide();
+
+      const [modules,       setModules]       = useState([]);
+      const [loading,       setLoading]        = useState(true);
+      const [session,       setSession]        = useState(null);
+
+      // Login modal
+      const [showLogin,     setShowLogin]      = useState(false);
+      const [email,         setEmail]          = useState('');
+      const [password,      setPassword]       = useState('');
+      const [loginError,    setLoginError]     = useState('');
+
+      // Edit modal
+      const [showEdit,      setShowEdit]       = useState(false);
+      const [editForm,      setEditForm]       = useState(EMPTY_FORM);
+      const [isSaving,      setIsSaving]       = useState(false);
+
+      /* ── Auth + carga inicial ── */
+      useEffect(() => {
+        db.auth.getSession().then(({ data: { session } }) => setSession(session));
+        const { data: { subscription } } = db.auth.onAuthStateChange((_, s) => setSession(s));
+        fetchModules();
+        return () => subscription.unsubscribe();
+      }, []);
+
+      /* ── CRUD ── */
+      const fetchModules = async () => {
+        setLoading(true);
+        const { data, error } = await db.from('modules').select('*').order('id', { ascending: true });
+        if (!error) setModules(data || []);
+        setLoading(false);
+      };
+
+      const handleLogin = async e => {
+        e.preventDefault();
+        setLoginError('');
+        const { error } = await db.auth.signInWithPassword({ email, password });
+        if (error) { setLoginError(error.message); }
+        else { setShowLogin(false); setEmail(''); setPassword(''); }
+      };
+
+      const handleLogout = () => db.auth.signOut();
+
+      const openEdit = (mod = null) => {
+        setEditForm(mod ? { ...mod } : EMPTY_FORM);
+        setShowEdit(true);
+      };
+
+      const handleSave = async e => {
+        e.preventDefault();
+        setIsSaving(true);
+        const data = { ...editForm };
+        if (data.id) {
+          await db.from('modules').update(data).eq('id', data.id);
+        } else {
+          delete data.id;
+          await db.from('modules').insert([data]);
+        }
+        setIsSaving(false);
+        setShowEdit(false);
+        fetchModules();
+      };
+
+      const handleDelete = async id => {
+        if (window.confirm('¿Eliminar este módulo?')) {
+          await db.from('modules').delete().eq('id', id);
+          fetchModules();
+        }
+      };
+
+      const seedData = async () => {
+        await db.from('modules').insert(DEFAULT_MODULES);
+        fetchModules();
+      };
+
+      /* ── Render ── */
+      return (
+        <div className="min-h-screen flex flex-col font-sans">
+          <Header session={session} onLogout={handleLogout} />
+
+          <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 lg:px-8 py-12 lg:py-16">
+
+            {/* Hero */}
+            <section className="relative overflow-hidden mb-12 -mx-6 lg:-mx-8 px-6 lg:px-8 py-10 rounded-2xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-luker-green/5 via-luker-orange/5 to-luker-teal/10" />
+              <div className="absolute top-0 right-0 w-96 h-96 bg-luker-green/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-luker-orange/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+
+              <div className="max-w-5xl mx-auto text-center space-y-4 relative z-10">
+                <span className="text-sm font-semibold text-white bg-gradient-to-r from-luker-green to-luker-teal px-5 py-2.5 rounded-full shadow-md inline-block">
+                  Plataforma de Gestión Estratégica
+                </span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-luker-brown leading-tight">
+                  Transformando vidas a través de la{' '}
+                  <span className="bg-gradient-to-r from-luker-green to-luker-teal bg-clip-text text-transparent">educación</span>
+                </h1>
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto">
+                  <strong className="text-luker-brown">Movilizamos palancas para que niños y jóvenes</strong> potencien su desarrollo para una vida{' '}
+                  <strong className="text-luker-green">productiva gratificante</strong>
+                </p>
+              </div>
+            </section>
+
+            {/* Módulos */}
+            {loading ? (
+              <div className="flex justify-center py-20">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-luker-green"></div>
+              </div>
+            ) : modules.length === 0 ? (
+              <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
+                <i data-lucide="database" className="w-12 h-12 text-gray-300 mx-auto mb-4"></i>
+                <h3 className="text-xl font-bold text-luker-brown mb-2">No hay módulos configurados</h3>
+                <p className="text-gray-500 mb-6">Inicia sesión como administrador para agregar módulos.</p>
+                {session && (
+                  <Btn onClick={seedData}>
+                    <i data-lucide="download" className="w-4 h-4 mr-2"></i> Cargar Módulos Iniciales
+                  </Btn>
+                )}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {modules.map(mod => (
+                  <ModuleCard key={mod.id} mod={mod} session={session} onEdit={openEdit} onDelete={handleDelete} />
+                ))}
+                {session && (
+                  <div
+                    onClick={() => openEdit()}
+                    className="rounded-xl border-2 border-dashed border-gray-300 hover:border-luker-green/50 hover:bg-gray-50/50 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center min-h-[300px] text-gray-500 hover:text-luker-green"
+                  >
+                    <div className="w-16 h-16 rounded-full bg-white border shadow-sm flex items-center justify-center mb-4">
+                      <i data-lucide="plus" className="w-8 h-8"></i>
+                    </div>
+                    <span className="font-semibold text-lg">Agregar Módulo</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </main>
+
+          <footer className="border-t border-gray-200 mt-auto py-10 bg-white/50 backdrop-blur-sm text-center text-sm font-medium text-luker-brown/50">
+          <div className="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-center gap-2">
+              <span>&copy; {new Date().getFullYear()} Fundación Luker. Todos los derechos reservados.</span>
+              <span className="hidden sm:inline">|</span>
+              <span>Sistema META — Monitoreo, Evaluación, Transparencia y Aprendizaje.</span>
+              {!session && (
+                <button onClick={() => setShowLogin(true)} className="ml-2 text-gray-300 hover:text-luker-brown transition-colors" title="Acceso Administrativo">
+                  <i data-lucide="lock" className="w-3 h-3"></i>
+                </button>
+              )}
+            </div>
+          </footer>
+
+          {/* ── Modal Login ── */}
+          {showLogin && !session && (
+            <Modal>
+              <ModalClose onClose={() => setShowLogin(false)} />
+              <div className="text-center mb-6">
+                <div className="w-12 h-12 bg-luker-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i data-lucide="shield" className="w-6 h-6 text-luker-green"></i>
+                </div>
+                <h2 className="text-2xl font-bold text-luker-brown">Administración</h2>
+                <p className="text-sm text-gray-500 mt-1">Ingresa tus credenciales para editar los módulos.</p>
+              </div>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <Field label="Correo Electrónico">
+                  <input type="email" className={inputCls} value={email} onChange={e => setEmail(e.target.value)} required />
+                </Field>
+                <Field label="Contraseña">
+                  <input type="password" className={inputCls} value={password} onChange={e => setPassword(e.target.value)} required />
+                </Field>
+                {loginError && <p className="text-red-500 text-sm font-medium">{loginError}</p>}
+                <Btn type="submit" className="w-full mt-2">Ingresar</Btn>
+              </form>
+            </Modal>
+          )}
+
+          {/* ── Modal Editar Módulo ── */}
+          {showEdit && session && (
+            <Modal>
+              <ModalClose onClose={() => setShowEdit(false)} />
+              <h2 className="text-2xl font-bold text-luker-brown mb-6">
+                {editForm.id ? 'Editar Módulo' : 'Nuevo Módulo'}
+              </h2>
+              <form onSubmit={handleSave} className="space-y-4">
+                <Field label="Título">
+                  <input type="text" className={inputCls} value={editForm.title} onChange={e => setEditForm({...editForm, title: e.target.value})} required />
+                </Field>
+                <Field label="Descripción">
+                  <textarea
+                    className="flex w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luker-green min-h-[80px]"
+                    value={editForm.description}
+                    onChange={e => setEditForm({...editForm, description: e.target.value})}
+                    required
+                  />
+                </Field>
+                <Field label="URL / Enlace">
+                  <input type="text" className={inputCls} placeholder="https://..." value={editForm.url} onChange={e => setEditForm({...editForm, url: e.target.value})} required />
+                </Field>
+                <Field label="Ícono representativo">
+                  <select
+                    className="flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-luker-green"
+                    value={editForm.icon}
+                    onChange={e => setEditForm({...editForm, icon: e.target.value})}
+                    required
+                  >
+                    {ICON_OPTIONS.map(g => (
+                      <optgroup key={g.group} label={g.group}>
+                        {g.icons.map(([val, label]) => (
+                          <option key={val} value={val}>{label} ({val})</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </Field>
+                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                  <Btn type="button" variant="ghost" onClick={() => setShowEdit(false)}>Cancelar</Btn>
+                  <Btn type="submit" disabled={isSaving}>{isSaving ? 'Guardando...' : 'Guardar Módulo'}</Btn>
+                </div>
+              </form>
+            </Modal>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+  </script>
+</body>
+</html>
