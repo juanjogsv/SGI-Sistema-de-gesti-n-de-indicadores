@@ -100,7 +100,7 @@ export default async function DashboardPage() {
 
         <div className="max-w-5xl mx-auto text-center space-y-4 relative z-10">
           <span className="text-sm font-semibold text-white bg-gradient-to-r from-luker-green to-luker-teal px-5 py-2.5 rounded-full shadow-md inline-block uppercase tracking-wider">
-            SISTEMA DE GESTIÓN DE INDICADORES
+            PLATAFORMA DE GESTIÓN ESTRATÉGICA
           </span>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-luker-brown leading-tight tracking-tight mt-6">
             Transformando vidas a través de la{' '}
