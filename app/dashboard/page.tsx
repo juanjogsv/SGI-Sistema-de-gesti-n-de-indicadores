@@ -101,7 +101,7 @@ export default async function DashboardPage() {
         
         <div className="relative z-10 max-w-4xl">
           <span className="inline-block py-1 px-4 rounded-full bg-luker-orange/20 text-luker-orange font-bold text-xs tracking-widest uppercase mb-4 border border-luker-orange/30">
-            Plataforma de Gestión Estratégica
+            Sistema de Gestión de Indicadores
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
             Transformando vidas a través <br className="hidden sm:block"/> de la educación
