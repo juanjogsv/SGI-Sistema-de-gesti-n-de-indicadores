@@ -110,7 +110,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
     setIsSavingEje(true)
     setEjeError(null)
     const payload = {
-      codigo: ejeForm.codigo.trim().toLowerCase().replace(/\s+/g, '_'),
+      codigo: ejeForm.nombre.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''),
       nombre: ejeForm.nombre.trim(),
       orden: ejeForm.orden,
     }
@@ -327,12 +327,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
               {editEje ? 'Editar Eje' : 'Nuevo Eje de Trabajo'}
             </h3>
             <form onSubmit={handleSubmitEje} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-foreground/90 mb-1">Código</label>
-                <input required type="text" value={ejeForm.codigo} onChange={e => setEjeForm({ ...ejeForm, codigo: e.target.value })}
-                  disabled={!!editEje} placeholder="ej: educacion"
-                  className="w-full border border-border rounded-lg p-2 font-mono text-sm focus:ring-2 focus:ring-luker-brown focus:outline-none disabled:bg-muted/50 disabled:text-muted-foreground/50" />
-              </div>
+
               <div>
                 <label className="block text-sm font-bold text-foreground/90 mb-1">Nombre visible</label>
                 <input required type="text" value={ejeForm.nombre} onChange={e => setEjeForm({ ...ejeForm, nombre: e.target.value })}

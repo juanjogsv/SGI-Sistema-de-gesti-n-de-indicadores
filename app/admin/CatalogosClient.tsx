@@ -65,7 +65,7 @@ export default function CatalogosClient({ initialData }: Props) {
     setError(null)
 
     const payload = {
-      codigo: form.codigo.trim().toLowerCase().replace(/\s+/g, '_'),
+      codigo: form.nombre.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, ''),
       nombre: form.nombre.trim(),
       descripcion: form.descripcion.trim() || null,
       orden: form.orden,
@@ -215,25 +215,6 @@ export default function CatalogosClient({ initialData }: Props) {
             <p className="text-sm text-muted-foreground mb-4">Catálogo: {config.label}</p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-foreground/90 mb-1">
-                  Código
-                  <span className="font-normal text-muted-foreground/50 ml-1">(identificador interno, no se puede cambiar después)</span>
-                </label>
-                <input
-                  required
-                  type="text"
-                  value={form.codigo}
-                  onChange={e => setForm({ ...form, codigo: e.target.value })}
-                  disabled={!!editTarget}
-                  placeholder="ej: porcentaje"
-                  className="w-full border border-border rounded-lg p-2 font-mono text-sm focus:ring-2 focus:ring-luker-brown focus:outline-none disabled:bg-muted/50 disabled:text-muted-foreground/50"
-                />
-                {!editTarget && (
-                  <p className="text-xs text-muted-foreground/50 mt-1">Solo minúsculas y guiones bajos. Ej: <code>tipo_especial</code></p>
-                )}
-              </div>
-
               <div>
                 <label className="block text-sm font-bold text-foreground/90 mb-1">Nombre visible</label>
                 <input
