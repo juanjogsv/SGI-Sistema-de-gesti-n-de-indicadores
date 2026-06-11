@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import ImportarExcel from './ImportarExcel'
 
 interface UsuarioRow {
   id: string
@@ -36,40 +37,67 @@ export default function UsuariosClient({ initialUsuarios }: { initialUsuarios: U
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-lg font-black text-gray-900">Usuarios Registrados</h2>
-        <p className="text-sm text-gray-500">Activa cuentas y asigna roles de permisos globales.</p>
+      <div className="flex justify-between items-start mb-6">
+        <div>
+          <h2 className="text-lg font-black text-foreground">Usuarios Registrados</h2>
+          <p className="text-sm text-muted-foreground">Activa cuentas y asigna roles de permisos globales.</p>
+        </div>
+        <ImportarExcel
+          templateName="Plantilla_Usuarios"
+          cols={[
+            { key: 'email', header: 'email', required: true, type: 'string' },
+            { key: 'rol_global', header: 'rol_global', required: true, type: 'string' },
+          ]}
+          templateRows={usuarios.map(u => ({ email: u.email, rol_global: u.rol_global || 'lector' }))}
+          onImport={async (rows) => {
+            let ok = 0
+            const errors: string[] = []
+            const rolesValidos = ['admin', 'editor', 'validador', 'lector', 'auditor']
+            for (const row of rows) {
+              const u = usuarios.find(u => u.email === row.email)
+              if (!u) { errors.push(`Usuario "${row.email}" no encontrado`); continue }
+              if (!rolesValidos.includes(row.rol_global as string)) {
+                errors.push(`Rol "${row.rol_global}" inválido para ${row.email}`); continue
+              }
+              const { error } = await supabase.from('usuarios').update({ rol_global: row.rol_global }).eq('id', u.id)
+              if (error) { errors.push(error.message); continue }
+              setUsuarios(prev => prev.map(uu => uu.id === u.id ? { ...uu, rol_global: row.rol_global as string } : uu))
+              ok++
+            }
+            return { ok, errors }
+          }}
+        />
       </div>
 
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+      <div className="overflow-x-auto border border-border rounded-lg">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-muted/30 border-b border-border">
             <tr>
-              <th className="p-4 font-semibold text-gray-600">Usuario</th>
-              <th className="p-4 font-semibold text-gray-600">Rol Global</th>
-              <th className="p-4 font-semibold text-gray-600">Estado</th>
+              <th className="p-4 font-semibold text-muted-foreground/80">Usuario</th>
+              <th className="p-4 font-semibold text-muted-foreground/80">Rol Global</th>
+              <th className="p-4 font-semibold text-muted-foreground/80">Estado</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {usuarios.length === 0 ? (
               <tr>
-                <td colSpan={3} className="p-8 text-center text-gray-500 font-medium italic">
+                <td colSpan={3} className="p-8 text-center text-muted-foreground font-medium italic">
                   No hay usuarios en la base de datos.
                 </td>
               </tr>
             ) : (
               usuarios.map(u => (
-                <tr key={u.id} className={!u.activo ? "bg-red-50/30" : "bg-white"}>
+                <tr key={u.id} className={!u.activo ? "bg-red-50/30" : "bg-card"}>
                   <td className="p-4">
-                    <p className="font-black text-gray-900">{u.nombre}</p>
-                    <p className="text-xs text-gray-500">{u.email}</p>
+                    <p className="font-black text-foreground">{u.nombre}</p>
+                    <p className="text-xs text-muted-foreground">{u.email}</p>
                   </td>
                   <td className="p-4">
                     <select
                       disabled={isSaving}
                       value={u.rol_global || 'lector'}
                       onChange={(e) => handleUpdateRole(u.id, e.target.value)}
-                      className="border border-gray-300 rounded p-1 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+                      className="border border-border rounded p-1 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
                     >
                       <option value="admin">Administrador</option>
                       <option value="editor">Editor</option>

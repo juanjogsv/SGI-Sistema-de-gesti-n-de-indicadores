@@ -9,6 +9,26 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      cat_ejes_trabajo: {
+        Row: { id: string; codigo: string; nombre: string; activo: boolean; orden: number; creado_en: string }
+        Insert: Omit<Database['public']['Tables']['cat_ejes_trabajo']['Row'], 'id' | 'creado_en'> & { id?: string; creado_en?: string }
+        Update: Partial<Database['public']['Tables']['cat_ejes_trabajo']['Insert']>
+      }
+      cat_tipos_dato: {
+        Row: { id: string; codigo: string; nombre: string; descripcion: string | null; activo: boolean; orden: number; creado_en: string }
+        Insert: Omit<Database['public']['Tables']['cat_tipos_dato']['Row'], 'id' | 'creado_en'> & { id?: string; creado_en?: string }
+        Update: Partial<Database['public']['Tables']['cat_tipos_dato']['Insert']>
+      }
+      cat_niveles_logico: {
+        Row: { id: string; codigo: string; nombre: string; descripcion: string | null; activo: boolean; orden: number; creado_en: string }
+        Insert: Omit<Database['public']['Tables']['cat_niveles_logico']['Row'], 'id' | 'creado_en'> & { id?: string; creado_en?: string }
+        Update: Partial<Database['public']['Tables']['cat_niveles_logico']['Insert']>
+      }
+      cat_frecuencias: {
+        Row: { id: string; codigo: string; nombre: string; descripcion: string | null; activo: boolean; orden: number; creado_en: string }
+        Insert: Omit<Database['public']['Tables']['cat_frecuencias']['Row'], 'id' | 'creado_en'> & { id?: string; creado_en?: string }
+        Update: Partial<Database['public']['Tables']['cat_frecuencias']['Insert']>
+      }
       usuarios: {
         Row: {
           id: string
