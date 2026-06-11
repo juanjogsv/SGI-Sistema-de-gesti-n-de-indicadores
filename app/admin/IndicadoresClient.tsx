@@ -165,7 +165,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
           <select
             value={filtroCiclo}
             onChange={e => { setFiltroCiclo(e.target.value); setFiltroPrograma('') }}
-            className="border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+            className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
           >
             <option value="">Todos los ciclos</option>
             {ciclos.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
@@ -173,7 +173,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
           <select
             value={filtroPrograma}
             onChange={e => setFiltroPrograma(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+            className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
           >
             <option value="">Todos los programas</option>
             {programasDeCiclo.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
@@ -181,15 +181,15 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
         </div>
         <button
           onClick={openCreate}
-          className="bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm"
+          className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-sm text-sm"
         >
           + Nuevo Indicador
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+      <div className="overflow-x-auto border border-border rounded-lg shadow-sm">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="p-4 font-semibold text-gray-600">Nombre</th>
               <th className="p-4 font-semibold text-gray-600">Programa</th>
@@ -229,10 +229,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                     )}
                   </td>
                   <td className="p-4 text-right space-x-3">
-                    <button onClick={() => openEdit(ind)} className="text-[#1F4E79] font-bold text-xs hover:underline">
+                    <button onClick={() => openEdit(ind)} className="text-luker-brown font-bold text-xs hover:underline">
                       Editar
                     </button>
-                    <button onClick={() => handleDelete(ind.id)} className="text-red-500 font-bold text-xs hover:underline">
+                    <button onClick={() => handleDelete(ind.id)} className="text-luker-red font-bold text-xs hover:underline">
                       Eliminar
                     </button>
                   </td>
@@ -244,9 +244,9 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-black text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-card rounded-lg shadow-card border border-border max-w-lg w-full p-6 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-black text-foreground mb-4">
               {editTarget ? 'Editar Indicador' : 'Nuevo Indicador'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -256,7 +256,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   required
                   value={form.programa_id}
                   onChange={e => setForm({ ...form, programa_id: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                 >
                   <option value="">Selecciona un programa...</option>
                   {programas.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
@@ -269,7 +269,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   type="text"
                   value={form.nombre}
                   onChange={e => setForm({ ...form, nombre: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
@@ -278,7 +278,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   <select
                     value={form.nivel_logico}
                     onChange={e => setForm({ ...form, nivel_logico: e.target.value as NivelLogico })}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                    className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                   >
                     {Object.entries(NIVEL_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
@@ -288,7 +288,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   <select
                     value={form.tipo_dato}
                     onChange={e => setForm({ ...form, tipo_dato: e.target.value as TipoDato })}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                    className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                   >
                     {Object.entries(TIPO_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
@@ -300,7 +300,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   <select
                     value={form.frecuencia_reporte}
                     onChange={e => setForm({ ...form, frecuencia_reporte: e.target.value as Frecuencia })}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                    className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                   >
                     {Object.entries(FRECUENCIA_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                   </select>
@@ -312,7 +312,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                     step="any"
                     value={form.linea_base}
                     onChange={e => setForm({ ...form, linea_base: Number(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                    className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                   />
                 </div>
               </div>
@@ -322,7 +322,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   type="checkbox"
                   checked={form.es_inverso}
                   onChange={e => setForm({ ...form, es_inverso: e.target.checked })}
-                  className="w-4 h-4 accent-[#1F4E79]"
+                  className="w-4 h-4 accent-luker-brown"
                 />
                 <label htmlFor="es_inverso" className="text-sm font-bold text-gray-700">
                   Indicador Inverso{' '}
@@ -342,7 +342,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-gray-600 font-bold px-4 py-2 hover:bg-gray-50 rounded-lg">
                   Cancelar
                 </button>
-                <button type="submit" disabled={isSaving} className="bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:opacity-50">
+                <button type="submit" disabled={isSaving} className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm disabled:opacity-50">
                   {isSaving ? 'Guardando...' : editTarget ? 'Guardar Cambios' : 'Crear Indicador'}
                 </button>
               </div>

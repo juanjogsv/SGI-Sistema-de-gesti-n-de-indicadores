@@ -102,7 +102,7 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
         <select
           value={filtroCiclo}
           onChange={e => setFiltroCiclo(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+          className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
         >
           <option value="">Todos los ciclos</option>
           {ciclos.map(c => (
@@ -111,15 +111,15 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
         </select>
         <button
           onClick={openCreate}
-          className="bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm"
+          className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm shadow-sm"
         >
           + Nuevo Programa
         </button>
       </div>
 
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+      <div className="overflow-x-auto border border-border rounded-lg shadow-sm">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="p-4 font-semibold text-gray-600">Nombre</th>
               <th className="p-4 font-semibold text-gray-600">Eje de Trabajo</th>
@@ -143,13 +143,13 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
                   <td className="p-4 text-right space-x-3">
                     <button
                       onClick={() => openEdit(p)}
-                      className="text-[#1F4E79] font-bold text-xs hover:underline"
+                      className="text-luker-brown font-bold text-xs hover:underline"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleDelete(p.id)}
-                      className="text-red-500 font-bold text-xs hover:underline"
+                      className="text-luker-red font-bold text-xs hover:underline"
                     >
                       Eliminar
                     </button>
@@ -162,9 +162,9 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <h3 className="text-xl font-black text-gray-900 mb-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-card rounded-lg shadow-card border border-border max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-black text-foreground mb-4">
               {editTarget ? 'Editar Programa' : 'Nuevo Programa'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -175,7 +175,7 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
                   type="text"
                   value={form.nombre}
                   onChange={e => setForm({ ...form, nombre: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                 />
               </div>
               <div>
@@ -185,7 +185,7 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
                   type="text"
                   value={form.eje_trabajo}
                   onChange={e => setForm({ ...form, eje_trabajo: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                 />
               </div>
               <div>
@@ -194,7 +194,7 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
                   required
                   value={form.ciclo_id}
                   onChange={e => setForm({ ...form, ciclo_id: e.target.value })}
-                  className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                 >
                   <option value="">Selecciona un ciclo...</option>
                   {ciclos.map(c => (
@@ -213,7 +213,7 @@ export default function ProgramasClient({ initialProgramas, ciclos }: Props) {
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:opacity-50"
+                  className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm disabled:opacity-50"
                 >
                   {isSaving ? 'Guardando...' : editTarget ? 'Guardar Cambios' : 'Crear Programa'}
                 </button>

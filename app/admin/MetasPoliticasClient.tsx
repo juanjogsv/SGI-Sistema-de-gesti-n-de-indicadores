@@ -193,7 +193,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
         <select
           value={filtroCiclo}
           onChange={e => { setFiltroCiclo(e.target.value); setFiltroPrograma('') }}
-          className="border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+          className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
         >
           <option value="">Selecciona un ciclo...</option>
           {ciclos.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
@@ -201,7 +201,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
         <select
           value={filtroPrograma}
           onChange={e => setFiltroPrograma(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-[#1F4E79]"
+          className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
         >
           <option value="">Todos los programas</option>
           {programasDeCiclo.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
@@ -211,9 +211,9 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
         )}
       </div>
 
-      <div className="overflow-x-auto border border-gray-200 rounded-lg">
+      <div className="overflow-x-auto border border-border rounded-lg shadow-sm">
         <table className="min-w-full text-sm text-left">
-          <thead className="bg-gray-50 border-b border-gray-200">
+          <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="p-4 font-semibold text-gray-600">Indicador</th>
               <th className="p-4 font-semibold text-gray-600">Programa</th>
@@ -265,7 +265,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                   <td className="p-4 text-right">
                     <button
                       onClick={() => openModal(fila)}
-                      className="text-[#1F4E79] font-bold text-xs hover:underline"
+                      className="text-luker-brown font-bold text-xs hover:underline"
                     >
                       {fila.meta || fila.politica ? 'Editar' : 'Configurar'}
                     </button>
@@ -278,9 +278,9 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
       </div>
 
       {isModalOpen && selectedIndicador && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-black text-gray-900 mb-1">Meta y Política de Calidad</h3>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+          <div className="bg-card rounded-lg shadow-card border border-border max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
+            <h3 className="text-xl font-black text-foreground mb-1">Meta y Política de Calidad</h3>
             <p className="text-sm text-gray-500 mb-6">{selectedIndicador.nombre}</p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -296,7 +296,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       step="any"
                       value={metaForm.valor_meta}
                       onChange={e => setMetaForm({ ...metaForm, valor_meta: Number(e.target.value) })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -306,7 +306,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       type="date"
                       value={metaForm.fecha_corte}
                       onChange={e => setMetaForm({ ...metaForm, fecha_corte: e.target.value })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                 </div>
@@ -322,7 +322,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                     type="checkbox"
                     checked={politicaForm.pondera}
                     onChange={e => setPoliticaForm({ ...politicaForm, pondera: e.target.checked })}
-                    className="w-4 h-4 accent-[#1F4E79]"
+                    className="w-4 h-4 accent-luker-brown"
                   />
                   <label htmlFor="pondera" className="text-sm font-bold text-gray-700">
                     Pondera en el score del programa
@@ -341,7 +341,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       min="0"
                       value={politicaForm.peso_estrategico}
                       onChange={e => setPoliticaForm({ ...politicaForm, peso_estrategico: Number(e.target.value) })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -355,7 +355,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       min="0"
                       value={politicaForm.alfa_exceso}
                       onChange={e => setPoliticaForm({ ...politicaForm, alfa_exceso: Number(e.target.value) })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -370,7 +370,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       max="1"
                       value={politicaForm.umbral_completitud}
                       onChange={e => setPoliticaForm({ ...politicaForm, umbral_completitud: Number(e.target.value) })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -382,7 +382,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       min="0"
                       value={politicaForm.dias_max_retraso}
                       onChange={e => setPoliticaForm({ ...politicaForm, dias_max_retraso: Number(e.target.value) })}
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -396,7 +396,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       value={politicaForm.tope_maximo}
                       onChange={e => setPoliticaForm({ ...politicaForm, tope_maximo: e.target.value })}
                       placeholder="Sin límite"
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -413,7 +413,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       value={politicaForm.rango_min}
                       onChange={e => setPoliticaForm({ ...politicaForm, rango_min: e.target.value })}
                       placeholder="—"
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                   <div>
@@ -427,7 +427,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       value={politicaForm.rango_max}
                       onChange={e => setPoliticaForm({ ...politicaForm, rango_max: e.target.value })}
                       placeholder="—"
-                      className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-[#1F4E79] focus:outline-none"
+                      className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                     />
                   </div>
                 </div>
@@ -450,7 +450,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-gray-600 font-bold px-4 py-2 hover:bg-gray-50 rounded-lg">
                   Cancelar
                 </button>
-                <button type="submit" disabled={isSaving} className="bg-[#1F4E79] hover:bg-[#163857] text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:opacity-50">
+                <button type="submit" disabled={isSaving} className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm disabled:opacity-50">
                   {isSaving ? 'Guardando...' : 'Guardar Meta y Política'}
                 </button>
               </div>

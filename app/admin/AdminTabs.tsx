@@ -20,15 +20,15 @@ export default function AdminTabs({ tabs }: { tabs: Tab[] }) {
             onClick={() => setActiveTab(tab.id)}
             className={`px-5 py-3 text-sm font-bold whitespace-nowrap transition-colors border-b-2 -mb-px ${
               activeTab === tab.id
-                ? 'border-[#1F4E79] text-[#1F4E79]'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-luker-orange text-luker-brown'
+                : 'border-transparent text-muted-foreground hover:text-luker-brown hover:border-luker-orange/50'
             }`}
           >
             {tab.label}
           </button>
         ))}
       </div>
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="bg-card rounded-lg border border-border shadow-card p-6">
         {tabs.find(t => t.id === activeTab)?.content}
       </div>
     </div>
