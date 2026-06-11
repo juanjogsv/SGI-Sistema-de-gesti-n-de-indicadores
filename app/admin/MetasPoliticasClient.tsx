@@ -175,14 +175,14 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
             }}
             templateRows={indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => ({
               indicador_nombre: i.nombre,
-              valor_meta: 100,
-              fecha_corte: '2024-12-31',
-              pondera: 'true',
-              peso_estrategico: 5,
-              alfa_exceso: 100,
-              tope_maximo: 120,
-              umbral_completitud: 100,
-              dias_max_retraso: 5
+              valor_meta: '',
+              fecha_corte: '',
+              pondera: '',
+              peso_estrategico: '',
+              alfa_exceso: '',
+              tope_maximo: '',
+              umbral_completitud: '',
+              dias_max_retraso: ''
             }))}
             onImport={async (rows) => {
               let ok = 0; const errors: string[] = []

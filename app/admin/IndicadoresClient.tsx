@@ -203,8 +203,8 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
               }}
               templateRows={programas.map(p => ({
                 nombre: '', programa_nombre: p.nombre,
-                nivel_logico_id: catNiveles[0]?.nombre ?? '', tipo_dato_id: catTipos[0]?.nombre ?? '',
-                linea_base: 0, frecuencia_reporte_id: catFrecuencias[0]?.nombre ?? '', es_inverso: 'false', observaciones: ''
+                nivel_logico_id: '', tipo_dato_id: '',
+                linea_base: '', frecuencia_reporte_id: '', es_inverso: '', observaciones: ''
               }))}
             onImport={async (rows) => {
               let ok = 0
