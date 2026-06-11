@@ -24,12 +24,18 @@ export default function TopNav() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="text-xl font-black text-luker-brown tracking-tight">Sistema de Gestión de Indicadores</span>
+              <Link href="/dashboard">
+                <img 
+                  src="/Logos_Fundacion_Luker/fundacion-luker-color-letra-cafe-horizontal.png" 
+                  alt="Fundación Luker" 
+                  className="h-10 w-auto object-contain hover:opacity-90 transition-opacity"
+                />
+              </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               {links.map((link) => {
