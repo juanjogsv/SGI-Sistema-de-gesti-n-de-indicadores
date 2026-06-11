@@ -67,19 +67,19 @@ export default function TopNav() {
                 )
               })}
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:items-center">
-              {user && (
-                <span className="text-sm font-medium text-luker-brown bg-muted/50 px-3 py-1.5 rounded-full border border-border">
-                  Hola, <span className="font-bold">{user.email?.split('@')[0]}</span>
-                </span>
-              )}
-              <button
-                onClick={handleLogout}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-luker-red hover:bg-luker-red/10 transition-colors"
-              >
-                Cerrar Sesión
-              </button>
-            </div>
+          </div>
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            {user && (
+              <span className="text-sm font-medium text-luker-brown bg-muted/50 px-3 py-1.5 rounded-full border border-border">
+                Hola, <span className="font-bold">{user.email?.split('@')[0]}</span>
+              </span>
+            )}
+            <button
+              onClick={handleLogout}
+              className="ml-4 px-3 py-2 rounded-md text-sm font-bold text-luker-red hover:bg-luker-red/10 transition-colors"
+            >
+              Cerrar Sesión
+            </button>
           </div>
         </div>
       </div>
