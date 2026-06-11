@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -30,9 +31,11 @@ export default function TopNav() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/dashboard">
-                <img 
+                <Image 
                   src="/Logos_Fundacion_Luker/fundacion-luker-color-letra-cafe-horizontal.png" 
-                  alt="Fundación Luker" 
+                  alt="Fundación Luker"
+                  width={150}
+                  height={40}
                   className="h-10 w-auto object-contain hover:opacity-90 transition-opacity"
                 />
               </Link>
