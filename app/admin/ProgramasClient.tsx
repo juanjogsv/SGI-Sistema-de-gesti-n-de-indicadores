@@ -16,6 +16,7 @@ interface Ciclo {
   id: string
   nombre: string
   anio: number
+  activo?: boolean
 }
 
 interface Programa {
@@ -38,7 +39,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
   const supabase = createClient()
   const [programas, setProgramas] = useState<Programa[]>(initialProgramas)
   const [ejes, setEjes] = useState<EjeTrabajo[]>(initialEjes)
-  const [filtroCiclo, setFiltroCiclo] = useState<string>('')
+  const [filtroCiclo, setFiltroCiclo] = useState<string>(ciclos.find(c => c.activo)?.id ?? '')
   const [showEjes, setShowEjes] = useState(false)
 
   // Programa modal

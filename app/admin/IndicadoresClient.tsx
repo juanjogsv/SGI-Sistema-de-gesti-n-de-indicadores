@@ -14,6 +14,7 @@ interface CatItem {
 interface Ciclo {
   id: string
   nombre: string
+  activo?: boolean
 }
 
 interface Programa {
@@ -57,7 +58,7 @@ const EMPTY_FORM = {
 export default function IndicadoresClient({ initialIndicadores, programas, ciclos, catTipos, catNiveles, catFrecuencias }: Props) {
   const supabase = createClient()
   const [indicadores, setIndicadores] = useState<Indicador[]>(initialIndicadores)
-  const [filtroCiclo, setFiltroCiclo] = useState<string>('')
+  const [filtroCiclo, setFiltroCiclo] = useState<string>(ciclos.find(c => c.activo)?.id ?? '')
   const [filtroPrograma, setFiltroPrograma] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Indicador | null>(null)

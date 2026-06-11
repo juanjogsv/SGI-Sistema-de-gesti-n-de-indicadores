@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import ImportarExcel from './ImportarExcel'
 
-interface Ciclo { id: string; nombre: string }
+interface Ciclo { id: string; nombre: string; activo?: boolean }
 interface Programa { id: string; nombre: string; ciclo_id: string }
 interface Indicador { id: string; nombre: string; programa_id: string }
 
@@ -66,7 +66,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
   const supabase = createClient()
   const [metas, setMetas] = useState<Meta[]>(initialMetas)
   const [politicas, setPoliticas] = useState<Politica[]>(initialPoliticas)
-  const [filtroCiclo, setFiltroCiclo] = useState<string>(ciclos[0]?.id ?? '')
+  const [filtroCiclo, setFiltroCiclo] = useState<string>(ciclos.find(c => c.activo)?.id ?? ciclos[0]?.id ?? '')
   const [filtroPrograma, setFiltroPrograma] = useState<string>('')
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [forms, setForms] = useState<Record<string, RowForm>>({})
