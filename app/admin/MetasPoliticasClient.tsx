@@ -159,22 +159,30 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
           <ImportarExcel
             templateName="Plantilla_Metas_Politicas"
             cols={[
-              { key: 'indicador_nombre', header: 'indicador_nombre', required: true, type: 'string' },
-              { key: 'valor_meta', header: 'valor_meta', required: true, type: 'number' },
-              { key: 'fecha_corte', header: 'fecha_corte', required: true, type: 'date' },
-              { key: 'pondera', header: 'pondera', type: 'boolean' },
-              { key: 'peso_estrategico', header: 'peso_estrategico', type: 'number' },
-              { key: 'alfa_exceso', header: 'alfa_exceso', type: 'number' },
-              { key: 'umbral_completitud', header: 'umbral_completitud', type: 'number' },
-              { key: 'dias_max_retraso', header: 'dias_max_retraso', type: 'number' },
-              { key: 'tope_maximo', header: 'tope_maximo', type: 'number' },
-              { key: 'rango_min', header: 'rango_min', type: 'number' },
-              { key: 'rango_max', header: 'rango_max', type: 'number' },
+              { key: 'indicador_nombre', header: 'Indicador', required: true, type: 'string' },
+              { key: 'valor_meta', header: 'Valor Meta', required: true, type: 'number' },
+              { key: 'fecha_corte', header: 'Fecha Corte', required: true, type: 'date' },
+              { key: 'pondera', header: 'Pondera (Sí/No)', type: 'boolean' },
+              { key: 'peso_estrategico', header: 'Peso Estratégico (1-5)', type: 'number' },
+              { key: 'alfa_exceso', header: 'Alfa Exceso (%)', type: 'number' },
+              { key: 'tope_maximo', header: 'Tope Máximo (%)', type: 'number' },
+              { key: 'umbral_completitud', header: 'Umbral Completitud', type: 'number' },
+              { key: 'dias_max_retraso', header: 'Días Máx Retraso', type: 'number' },
             ]}
+            validations={{
+              indicador_nombre: indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => i.nombre),
+              pondera: ['true', 'false']
+            }}
             templateRows={indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => ({
-              indicador_nombre: i.nombre, valor_meta: '', fecha_corte: '',
-              pondera: 'true', peso_estrategico: 1, alfa_exceso: 1,
-              umbral_completitud: 0.8, dias_max_retraso: 5, tope_maximo: '', rango_min: '', rango_max: ''
+              indicador_nombre: i.nombre,
+              valor_meta: 100,
+              fecha_corte: '2024-12-31',
+              pondera: 'true',
+              peso_estrategico: 5,
+              alfa_exceso: 100,
+              tope_maximo: 120,
+              umbral_completitud: 100,
+              dias_max_retraso: 5
             }))}
             onImport={async (rows) => {
               let ok = 0; const errors: string[] = []

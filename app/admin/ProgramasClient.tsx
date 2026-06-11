@@ -222,6 +222,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
               { key: 'eje_trabajo', header: 'eje_trabajo', required: true, type: 'string' },
               { key: 'ciclo_nombre', header: 'ciclo_nombre', required: true, type: 'string' },
             ]}
+            validations={{ eje_trabajo: ejesActivos.map(e => e.nombre) }}
             templateRows={ciclos.map(c => ({ nombre: '', eje_trabajo: ejesActivos[0]?.codigo ?? '', ciclo_nombre: c.nombre }))}
             onImport={async (rows) => {
               let ok = 0

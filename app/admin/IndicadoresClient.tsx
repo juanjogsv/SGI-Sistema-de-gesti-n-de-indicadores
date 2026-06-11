@@ -183,22 +183,29 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
         </div>
         <div className="flex gap-2">
           <ImportarExcel
-            templateName="Plantilla_Indicadores"
-            cols={[
-              { key: 'nombre', header: 'nombre', required: true, type: 'string' },
-              { key: 'programa_nombre', header: 'programa_nombre', required: true, type: 'string' },
-              { key: 'nivel_logico_id', header: 'nivel_logico_id', required: true, type: 'string' },
-              { key: 'tipo_dato_id', header: 'tipo_dato_id', required: true, type: 'string' },
-              { key: 'linea_base', header: 'linea_base', required: true, type: 'number' },
-              { key: 'frecuencia_reporte_id', header: 'frecuencia_reporte_id', type: 'string' },
-              { key: 'es_inverso', header: 'es_inverso', type: 'boolean' },
-              { key: 'observaciones', header: 'observaciones', type: 'string' },
-            ]}
-            templateRows={programas.map(p => ({
-              nombre: '', programa_nombre: p.nombre,
-              nivel_logico_id: catNiveles[0]?.id ?? '', tipo_dato_id: catTipos[0]?.id ?? '',
-              linea_base: 0, frecuencia_reporte_id: catFrecuencias[0]?.id ?? '', es_inverso: 'false', observaciones: ''
-            }))}
+              templateName="Plantilla_Indicadores"
+              cols={[
+                { key: 'nombre', header: 'Nombre Indicador', required: true, type: 'string' },
+                { key: 'programa_nombre', header: 'Programa', required: true, type: 'string' },
+                { key: 'nivel_logico_id', header: 'Nivel Lógico', required: true, type: 'string' },
+                { key: 'tipo_dato_id', header: 'Tipo de Dato', required: true, type: 'string' },
+                { key: 'linea_base', header: 'Línea Base', required: true, type: 'number' },
+                { key: 'frecuencia_reporte_id', header: 'Frecuencia de Reporte', type: 'string' },
+                { key: 'es_inverso', header: 'Es Inverso', type: 'boolean' },
+                { key: 'observaciones', header: 'Observaciones', type: 'string' },
+              ]}
+              validations={{
+                programa_nombre: programas.map(p => p.nombre),
+                nivel_logico_id: catNiveles.map(n => n.nombre),
+                tipo_dato_id: catTipos.map(t => t.nombre),
+                frecuencia_reporte_id: catFrecuencias.map(f => f.nombre),
+                es_inverso: ['true', 'false']
+              }}
+              templateRows={programas.map(p => ({
+                nombre: '', programa_nombre: p.nombre,
+                nivel_logico_id: catNiveles[0]?.nombre ?? '', tipo_dato_id: catTipos[0]?.nombre ?? '',
+                linea_base: 0, frecuencia_reporte_id: catFrecuencias[0]?.nombre ?? '', es_inverso: 'false', observaciones: ''
+              }))}
             onImport={async (rows) => {
               let ok = 0
               const errors: string[] = []

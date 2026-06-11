@@ -2,6 +2,8 @@
 
 import React, { useRef, useState } from 'react'
 import * as XLSX from 'xlsx'
+import ExcelJS from 'exceljs'
+import { saveAs } from 'file-saver'
 
 export interface ColDef {
   key: string
@@ -14,10 +16,11 @@ interface Props {
   templateName: string
   cols: ColDef[]
   templateRows?: Record<string, string | number>[]
+  validations?: Record<string, string[]>
   onImport: (rows: Record<string, unknown>[]) => Promise<{ ok: number; errors: string[] }>
 }
 
-export default function ImportarExcel({ templateName, cols, templateRows = [], onImport }: Props) {
+export default function ImportarExcel({ templateName, cols, templateRows = [], validations = {}, onImport }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [rows, setRows] = useState<{ data: Record<string, unknown>; error?: string }[]>([])
@@ -25,14 +28,47 @@ export default function ImportarExcel({ templateName, cols, templateRows = [], o
   const [isImporting, setIsImporting] = useState(false)
   const [result, setResult] = useState<{ ok: number; errors: string[] } | null>(null)
 
-  const downloadTemplate = () => {
-    const headers = cols.map(c => c.header)
-    const data = [headers, ...templateRows.map(r => cols.map(c => r[c.key] ?? ''))]
-    const ws = XLSX.utils.aoa_to_sheet(data)
-    ws['!cols'] = cols.map(() => ({ wch: 25 }))
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Plantilla')
-    XLSX.writeFile(wb, `${templateName}.xlsx`)
+  const downloadTemplate = async () => {
+    const workbook = new ExcelJS.Workbook()
+    const ws = workbook.addWorksheet('Plantilla')
+    
+    ws.columns = cols.map(c => ({ header: c.header, key: c.key, width: 25 }))
+    
+    if (templateRows.length > 0) {
+      templateRows.forEach(row => ws.addRow(row))
+    }
+
+    if (Object.keys(validations).length > 0) {
+      const optionsSheet = workbook.addWorksheet('Opciones', { state: 'hidden' })
+      let hiddenColIndex = 1
+      
+      cols.forEach((col, i) => {
+        const options = validations[col.key] || validations[col.header]
+        if (options && options.length > 0) {
+          const hiddenColLetter = optionsSheet.getColumn(hiddenColIndex).letter
+          options.forEach((opt, rowIndex) => {
+            optionsSheet.getCell(`${hiddenColLetter}${rowIndex + 1}`).value = opt
+          })
+          
+          const colLetter = ws.getColumn(i + 1).letter
+          const formula = `Opciones!$${hiddenColLetter}$1:$${hiddenColLetter}$${options.length}`
+          
+          // @ts-expect-error: exceljs TS types sometimes miss dataValidations
+          ws.dataValidations.add(`${colLetter}2:${colLetter}1000`, {
+            type: 'list',
+            allowBlank: true,
+            formulae: [formula]
+          })
+          hiddenColIndex++
+        }
+      })
+    }
+
+    ws.getRow(1).font = { bold: true }
+    ws.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } }
+
+    const buffer = await workbook.xlsx.writeBuffer()
+    saveAs(new Blob([buffer]), `${templateName}.xlsx`)
   }
 
   const parseValue = (raw: unknown, col: ColDef): { value: unknown; error?: string } => {
