@@ -35,7 +35,7 @@ export default function UsuariosClient({ initialUsuarios }: { initialUsuarios: U
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+    <div>
       <div className="mb-6">
         <h2 className="text-lg font-black text-gray-900">Usuarios Registrados</h2>
         <p className="text-sm text-gray-500">Activa cuentas y asigna roles de permisos globales.</p>

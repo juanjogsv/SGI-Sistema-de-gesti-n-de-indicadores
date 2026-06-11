@@ -66,8 +66,7 @@ export default function AdminClient({ initialCiclos }: { initialCiclos: Ciclo[] 
 
   return (
     <div className="space-y-8">
-      {/* Tarjeta de Gestión de Ciclos */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+      <div>
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-lg font-black text-gray-900">Ciclos de Operación</h2>

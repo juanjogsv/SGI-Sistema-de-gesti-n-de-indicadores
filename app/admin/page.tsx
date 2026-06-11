@@ -1,15 +1,18 @@
 import { createClient } from '@/lib/supabase/server'
 import AdminClient from './AdminClient'
 import UsuariosClient from './UsuariosClient'
+import ProgramasClient from './ProgramasClient'
+import IndicadoresClient from './IndicadoresClient'
+import MetasPoliticasClient from './MetasPoliticasClient'
+import AdminTabs from './AdminTabs'
 import PageHeader from '@/components/PageHeader'
 import { Settings } from 'lucide-react'
 
 export default async function AdminPage() {
   const supabase = createClient()
 
-  // 1. Verificación de Autenticación y Rol
   const { data: authData } = await supabase.auth.getUser()
-  
+
   if (!authData.user) {
     return (
       <div className="flex items-center justify-center h-64 bg-white rounded-xl border border-gray-200">
@@ -37,35 +40,79 @@ export default async function AdminPage() {
     )
   }
 
-  // 2. Cargar datos si es Admin
-  const { data: ciclos } = await supabase
-    .from('ciclos')
-    .select('*')
-    .order('anio', { ascending: false })
+  const [
+    { data: ciclos },
+    { data: usuarios },
+    { data: programas },
+    { data: indicadores },
+    { data: metas },
+    { data: politicas },
+  ] = await Promise.all([
+    supabase.from('ciclos').select('*').order('anio', { ascending: false }),
+    supabase.from('usuarios').select('*').order('creado_en', { ascending: true }),
+    supabase.from('programas').select('*').order('nombre'),
+    supabase.from('indicadores').select('*').order('nombre'),
+    supabase.from('metas').select('*'),
+    supabase.from('politicas_calidad').select('*'),
+  ])
 
-  const { data: usuarios } = await supabase
-    .from('usuarios')
-    .select('*')
-    .order('creado_en', { ascending: true })
+  const tabs = [
+    {
+      id: 'ciclos',
+      label: 'Ciclos',
+      content: <AdminClient initialCiclos={ciclos || []} />,
+    },
+    {
+      id: 'usuarios',
+      label: 'Usuarios',
+      content: <UsuariosClient initialUsuarios={usuarios || []} />,
+    },
+    {
+      id: 'programas',
+      label: 'Programas',
+      content: (
+        <ProgramasClient
+          initialProgramas={programas || []}
+          ciclos={ciclos || []}
+        />
+      ),
+    },
+    {
+      id: 'indicadores',
+      label: 'Indicadores',
+      content: (
+        <IndicadoresClient
+          initialIndicadores={indicadores || []}
+          programas={programas || []}
+          ciclos={ciclos || []}
+        />
+      ),
+    },
+    {
+      id: 'metas',
+      label: 'Metas y Políticas',
+      content: (
+        <MetasPoliticasClient
+          initialMetas={metas || []}
+          initialPoliticas={politicas || []}
+          indicadores={indicadores || []}
+          programas={programas || []}
+          ciclos={ciclos || []}
+        />
+      ),
+    },
+  ]
 
   return (
     <div className="max-w-[1400px] mx-auto pb-12 animate-in fade-in duration-500">
-      <PageHeader 
-        title="Configuración General" 
-        description="Gestión centralizada de ciclos operativos y permisos de usuarios en la plataforma."
+      <PageHeader
+        title="Configuración General"
+        description="Gestión centralizada de ciclos, programas, indicadores, metas y políticas de calidad."
         Icon={Settings}
         iconBgColor="bg-luker-brown"
       />
-
       <div className="px-4 sm:px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 items-start">
-          <div className="bg-card rounded-lg border border-border shadow-card hover:shadow-card-hover transition-all">
-            <AdminClient initialCiclos={ciclos || []} />
-          </div>
-          <div className="bg-card rounded-lg border border-border shadow-card hover:shadow-card-hover transition-all">
-            <UsuariosClient initialUsuarios={usuarios || []} />
-          </div>
-        </div>
+        <AdminTabs tabs={tabs} />
       </div>
     </div>
   )
