@@ -46,7 +46,7 @@ export interface Database {
         Row: {
           id: string
           nombre: string
-          eje_trabajo: string
+          eje_trabajo_id: string
           ciclo_id: string
           creado_en: string
         }
@@ -67,10 +67,10 @@ export interface Database {
         Row: {
           id: string
           nombre: string
-          nivel_logico: Database['public']['Enums']['nivel_logico_enum']
-          tipo_dato: Database['public']['Enums']['tipo_dato_enum']
+          nivel_logico_id: string
+          tipo_dato_id: string
           linea_base: number
-          frecuencia_reporte: Database['public']['Enums']['frecuencia_enum']
+          frecuencia_reporte_id: string
           es_inverso: boolean
           observaciones: string | null
           programa_id: string
@@ -133,8 +133,8 @@ export interface Database {
           eje_trabajo: string
           indicador_id: string
           indicador: string
-          nivel_logico: Database['public']['Enums']['nivel_logico_enum']
-          tipo_dato: Database['public']['Enums']['tipo_dato_enum']
+          nivel_logico: string
+          tipo_dato: string
           es_inverso: boolean
           ciclo: string
           valor_meta: number | null

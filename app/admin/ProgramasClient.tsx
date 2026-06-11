@@ -21,7 +21,7 @@ interface Ciclo {
 interface Programa {
   id: string
   nombre: string
-  eje_trabajo: string
+  eje_trabajo_id: string
   ciclo_id: string
 }
 
@@ -31,7 +31,7 @@ interface Props {
   ciclos: Ciclo[]
 }
 
-const EMPTY_PROG = { nombre: '', eje_trabajo: '', ciclo_id: '' }
+const EMPTY_PROG = { nombre: '', eje_trabajo_id: '', ciclo_id: '' }
 const EMPTY_EJE = { codigo: '', nombre: '', orden: 0 }
 
 export default function ProgramasClient({ initialProgramas, initialEjes, ciclos }: Props) {
@@ -57,17 +57,17 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
   const ejesActivos = ejes.filter(e => e.activo).sort((a, b) => a.orden - b.orden)
   const programasFiltrados = filtroCiclo ? programas.filter(p => p.ciclo_id === filtroCiclo) : programas
   const cicloNombre = (id: string) => ciclos.find(c => c.id === id)?.nombre ?? '—'
-  const ejeNombre = (codigo: string) => ejes.find(e => e.codigo === codigo)?.nombre ?? codigo
+  const ejeNombre = (id: string) => ejes.find(e => e.id === id)?.nombre ?? '—'
 
   // --- Programas ---
   const openCreate = () => {
     setEditTarget(null)
-    setForm({ ...EMPTY_PROG, ciclo_id: filtroCiclo, eje_trabajo: ejesActivos[0]?.codigo ?? '' })
+    setForm({ ...EMPTY_PROG, ciclo_id: filtroCiclo, eje_trabajo_id: ejesActivos[0]?.id ?? '' })
     setIsModalOpen(true)
   }
   const openEdit = (p: Programa) => {
     setEditTarget(p)
-    setForm({ nombre: p.nombre, eje_trabajo: p.eje_trabajo, ciclo_id: p.ciclo_id })
+    setForm({ nombre: p.nombre, eje_trabajo_id: p.eje_trabajo_id, ciclo_id: p.ciclo_id })
     setIsModalOpen(true)
   }
   const handleSubmit = async (e: React.FormEvent) => {
@@ -229,7 +229,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
                 const ciclo = ciclos.find(c => c.nombre === row.ciclo_nombre)
                 if (!ciclo) { errors.push(`Ciclo "${row.ciclo_nombre}" no encontrado`); continue }
                 const { data, error } = await supabase.from('programas')
-                  .insert({ nombre: row.nombre as string, eje_trabajo: row.eje_trabajo as string, ciclo_id: ciclo.id })
+                  .insert({ nombre: row.nombre as string, eje_trabajo_id: ejesActivos.find(e => e.codigo === row.eje_trabajo || e.nombre === row.eje_trabajo)?.id ?? '', ciclo_id: ciclo.id })
                   .select().single()
                 if (error) { errors.push(error.message); continue }
                 if (data) { setProgramas(p => [data, ...p]); ok++ }
@@ -264,7 +264,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
                 <tr key={p.id} className="bg-card hover:bg-muted/30">
                   <td className="p-4 font-bold text-foreground">{p.nombre}</td>
                   <td className="p-4 text-muted-foreground/80 text-xs">
-                    <span className="bg-muted/50 px-2 py-0.5 rounded">{ejeNombre(p.eje_trabajo)}</span>
+                    <span className="bg-muted/50 px-2 py-0.5 rounded">{ejeNombre(p.eje_trabajo_id)}</span>
                   </td>
                   <td className="p-4 text-muted-foreground text-xs">{cicloNombre(p.ciclo_id)}</td>
                   <td className="p-4 text-right space-x-3">
@@ -293,10 +293,10 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
               </div>
               <div>
                 <label className="block text-sm font-bold text-foreground/90 mb-1">Eje de Trabajo</label>
-                <select required value={form.eje_trabajo} onChange={e => setForm({ ...form, eje_trabajo: e.target.value })}
+                <select required value={form.eje_trabajo_id} onChange={e => setForm({ ...form, eje_trabajo_id: e.target.value })}
                   className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none">
                   <option value="">Selecciona un eje...</option>
-                  {ejesActivos.map(eje => <option key={eje.codigo} value={eje.codigo}>{eje.nombre}</option>)}
+                  {ejesActivos.map(eje => <option key={eje.id} value={eje.id}>{eje.nombre}</option>)}
                 </select>
                 <p className="text-xs text-muted-foreground/50 mt-1">Administra los ejes en el panel de arriba.</p>
               </div>

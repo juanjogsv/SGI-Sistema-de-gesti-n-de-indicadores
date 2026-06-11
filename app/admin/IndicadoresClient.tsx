@@ -25,10 +25,10 @@ interface Programa {
 interface Indicador {
   id: string
   nombre: string
-  nivel_logico: string
-  tipo_dato: string
+  nivel_logico_id: string
+  tipo_dato_id: string
   linea_base: number
-  frecuencia_reporte: string
+  frecuencia_reporte_id: string
   es_inverso: boolean
   observaciones: string | null
   programa_id: string
@@ -45,10 +45,10 @@ interface Props {
 
 const EMPTY_FORM = {
   nombre: '',
-  nivel_logico: '',
-  tipo_dato: '',
+  nivel_logico_id: '',
+  tipo_dato_id: '',
   linea_base: 0,
-  frecuencia_reporte: '',
+  frecuencia_reporte_id: '',
   es_inverso: false,
   observaciones: '',
   programa_id: '',
@@ -61,15 +61,17 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
   const [filtroPrograma, setFiltroPrograma] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Indicador | null>(null)
-  const [form, setForm] = useState({ ...EMPTY_FORM, nivel_logico: catNiveles[0]?.codigo ?? '', tipo_dato: catTipos[0]?.codigo ?? '', frecuencia_reporte: catFrecuencias[0]?.codigo ?? '' })
+  const [form, setForm] = useState({ 
+    ...EMPTY_FORM, 
+    nivel_logico_id: catNiveles[0]?.id ?? '', 
+    tipo_dato_id: catTipos[0]?.id ?? '', 
+    frecuencia_reporte_id: catFrecuencias[0]?.id ?? '' 
+  })
   const [isSaving, setIsSaving] = useState(false)
 
-  const nivelesActivos = catNiveles.filter(c => c.activo)
-  const tiposActivos = catTipos.filter(c => c.activo)
-  const frecuenciasActivas = catFrecuencias.filter(c => c.activo)
-
-  const labelOf = (items: CatItem[], codigo: string) =>
-    items.find(i => i.codigo === codigo)?.nombre ?? codigo
+  const nivelNombre = (id: string) => catNiveles.find(n => n.id === id)?.nombre ?? '—'
+  const tipoNombre = (id: string) => catTipos.find(t => t.id === id)?.nombre ?? '—'
+  const frecNombre = (id: string) => catFrecuencias.find(f => f.id === id)?.nombre ?? '—'
 
   const programasDeCiclo = filtroCiclo ? programas.filter(p => p.ciclo_id === filtroCiclo) : programas
 
@@ -86,10 +88,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
     setEditTarget(null)
     setForm({
       nombre: '',
-      nivel_logico: nivelesActivos[0]?.codigo ?? '',
-      tipo_dato: tiposActivos[0]?.codigo ?? '',
+      nivel_logico_id: catNiveles[0]?.id ?? '',
+      tipo_dato_id: catTipos[0]?.id ?? '',
       linea_base: 0,
-      frecuencia_reporte: frecuenciasActivas[0]?.codigo ?? '',
+      frecuencia_reporte_id: catFrecuencias[0]?.id ?? '',
       es_inverso: false,
       observaciones: '',
       programa_id: filtroPrograma,
@@ -101,10 +103,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
     setEditTarget(ind)
     setForm({
       nombre: ind.nombre,
-      nivel_logico: ind.nivel_logico,
-      tipo_dato: ind.tipo_dato,
+      nivel_logico_id: ind.nivel_logico_id,
+      tipo_dato_id: ind.tipo_dato_id,
       linea_base: ind.linea_base,
-      frecuencia_reporte: ind.frecuencia_reporte,
+      frecuencia_reporte_id: ind.frecuencia_reporte_id,
       es_inverso: ind.es_inverso,
       observaciones: ind.observaciones ?? '',
       programa_id: ind.programa_id,
@@ -118,10 +120,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
 
     const payload = {
       nombre: form.nombre,
-      nivel_logico: form.nivel_logico,
-      tipo_dato: form.tipo_dato,
+      nivel_logico_id: form.nivel_logico_id,
+      tipo_dato_id: form.tipo_dato_id,
       linea_base: form.linea_base,
-      frecuencia_reporte: form.frecuencia_reporte,
+      frecuencia_reporte_id: form.frecuencia_reporte_id,
       es_inverso: form.es_inverso,
       observaciones: form.observaciones || null,
       programa_id: form.programa_id,
@@ -184,17 +186,17 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
             cols={[
               { key: 'nombre', header: 'nombre', required: true, type: 'string' },
               { key: 'programa_nombre', header: 'programa_nombre', required: true, type: 'string' },
-              { key: 'nivel_logico', header: 'nivel_logico', required: true, type: 'string' },
-              { key: 'tipo_dato', header: 'tipo_dato', required: true, type: 'string' },
+              { key: 'nivel_logico_id', header: 'nivel_logico_id', required: true, type: 'string' },
+              { key: 'tipo_dato_id', header: 'tipo_dato_id', required: true, type: 'string' },
               { key: 'linea_base', header: 'linea_base', required: true, type: 'number' },
-              { key: 'frecuencia_reporte', header: 'frecuencia_reporte', type: 'string' },
+              { key: 'frecuencia_reporte_id', header: 'frecuencia_reporte_id', type: 'string' },
               { key: 'es_inverso', header: 'es_inverso', type: 'boolean' },
               { key: 'observaciones', header: 'observaciones', type: 'string' },
             ]}
             templateRows={programas.map(p => ({
               nombre: '', programa_nombre: p.nombre,
-              nivel_logico: nivelesActivos[0]?.codigo ?? '', tipo_dato: tiposActivos[0]?.codigo ?? '',
-              linea_base: 0, frecuencia_reporte: frecuenciasActivas[0]?.codigo ?? '', es_inverso: 'false', observaciones: ''
+              nivel_logico_id: catNiveles[0]?.id ?? '', tipo_dato_id: catTipos[0]?.id ?? '',
+              linea_base: 0, frecuencia_reporte_id: catFrecuencias[0]?.id ?? '', es_inverso: 'false', observaciones: ''
             }))}
             onImport={async (rows) => {
               let ok = 0
@@ -205,10 +207,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 const { data, error } = await supabase.from('indicadores').insert({
                   nombre: row.nombre as string,
                   programa_id: prog.id,
-                  nivel_logico: row.nivel_logico as string,
-                  tipo_dato: row.tipo_dato as string,
+                  nivel_logico_id: row.nivel_logico_id as string,
+                  tipo_dato_id: row.tipo_dato_id as string,
                   linea_base: row.linea_base as number,
-                  frecuencia_reporte: (row.frecuencia_reporte as string) || frecuenciasActivas[0]?.codigo,
+                  frecuencia_reporte_id: (row.frecuencia_reporte_id as string) || catFrecuencias[0]?.id,
                   es_inverso: Boolean(row.es_inverso),
                   observaciones: (row.observaciones as string) || null,
                 }).select().single()
@@ -254,13 +256,9 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                     <span className="line-clamp-2">{ind.nombre}</span>
                   </td>
                   <td className="p-4 text-muted-foreground/80 text-xs">{programaNombre(ind.programa_id)}</td>
-                  <td className="p-4">
-                    <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">
-                      {labelOf(catNiveles, ind.nivel_logico)}
-                    </span>
-                  </td>
-                  <td className="p-4 text-muted-foreground/80 text-xs">{labelOf(catTipos, ind.tipo_dato)}</td>
-                  <td className="p-4 text-muted-foreground/80 text-xs">{labelOf(catFrecuencias, ind.frecuencia_reporte)}</td>
+                  <td className="p-4 text-xs">{nivelNombre(ind.nivel_logico_id)}</td>
+                  <td className="p-4 text-muted-foreground/80 text-xs">{tipoNombre(ind.tipo_dato_id)}</td>
+                  <td className="p-4 text-muted-foreground/80 text-xs">{frecNombre(ind.frecuencia_reporte_id)}</td>
                   <td className="p-4 text-xs">
                     {ind.es_inverso
                       ? <span className="text-orange-600 font-bold">Sí</span>
@@ -310,21 +308,23 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 <div>
                   <label className="block text-sm font-bold text-foreground/90 mb-1">Nivel Lógico</label>
                   <select
-                    value={form.nivel_logico}
-                    onChange={e => setForm({ ...form, nivel_logico: e.target.value })}
+                    required
+                    value={form.nivel_logico_id}
+                    onChange={e => setForm({ ...form, nivel_logico_id: e.target.value })}
                     className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                   >
-                    {nivelesActivos.map(n => <option key={n.codigo} value={n.codigo}>{n.nombre}</option>)}
+                    {catNiveles.map(n => <option key={n.id} value={n.id}>{n.nombre}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-foreground/90 mb-1">Tipo de Dato</label>
                   <select
-                    value={form.tipo_dato}
-                    onChange={e => setForm({ ...form, tipo_dato: e.target.value })}
+                    required
+                    value={form.tipo_dato_id}
+                    onChange={e => setForm({ ...form, tipo_dato_id: e.target.value })}
                     className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                   >
-                    {tiposActivos.map(t => <option key={t.codigo} value={t.codigo}>{t.nombre}</option>)}
+                    {catTipos.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
                   </select>
                 </div>
               </div>
@@ -332,11 +332,11 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 <div>
                   <label className="block text-sm font-bold text-foreground/90 mb-1">Frecuencia de Reporte</label>
                   <select
-                    value={form.frecuencia_reporte}
-                    onChange={e => setForm({ ...form, frecuencia_reporte: e.target.value })}
+                    value={form.frecuencia_reporte_id}
+                    onChange={e => setForm({ ...form, frecuencia_reporte_id: e.target.value })}
                     className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                   >
-                    {frecuenciasActivas.map(f => <option key={f.codigo} value={f.codigo}>{f.nombre}</option>)}
+                    {catFrecuencias.map(f => <option key={f.id} value={f.id}>{f.nombre}</option>)}
                   </select>
                 </div>
                 <div>
