@@ -215,10 +215,10 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 const { data, error } = await supabase.from('indicadores').insert({
                   nombre: row.nombre as string,
                   programa_id: prog.id,
-                  nivel_logico_id: row.nivel_logico_id as string,
-                  tipo_dato_id: row.tipo_dato_id as string,
+                  nivel_logico_id: catNiveles.find(n => n.nombre === row.nivel_logico_id)?.id ?? '',
+                  tipo_dato_id: catTipos.find(t => t.nombre === row.tipo_dato_id)?.id ?? '',
                   linea_base: row.linea_base as number,
-                  frecuencia_reporte_id: (row.frecuencia_reporte_id as string) || catFrecuencias[0]?.id,
+                  frecuencia_reporte_id: catFrecuencias.find(f => f.nombre === row.frecuencia_reporte_id)?.id || catFrecuencias[0]?.id,
                   es_inverso: Boolean(row.es_inverso),
                   observaciones: (row.observaciones as string) || null,
                 }).select().single()
