@@ -177,7 +177,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
             onChange={e => setFiltroPrograma(e.target.value)}
             className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown"
           >
-            <option value="">Todos los programas</option>
+            <option value="">Todos los programas / iniciativas</option>
             {programasDeCiclo.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
           </select>
         </div>
@@ -235,7 +235,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
           <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="p-4 font-semibold text-muted-foreground/80">Nombre</th>
-              <th className="p-4 font-semibold text-muted-foreground/80">Programa</th>
+              <th className="p-4 font-semibold text-muted-foreground/80">Programa / Iniciativa</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Nivel</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Tipo</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Frecuencia</th>
@@ -284,14 +284,14 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-foreground/90 mb-1">Programa</label>
+                <label className="block text-sm font-bold text-foreground/90 mb-1">Programa / Iniciativa</label>
                 <select
                   required
                   value={form.programa_id}
                   onChange={e => setForm({ ...form, programa_id: e.target.value })}
                   className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none"
                 >
-                  <option value="">Selecciona un programa...</option>
+                  <option value="">Selecciona un programa / iniciativa...</option>
                   {programas.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
                 </select>
               </div>

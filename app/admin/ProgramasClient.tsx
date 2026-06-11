@@ -87,7 +87,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
     setIsModalOpen(false)
   }
   const handleDelete = async (id: string) => {
-    if (!confirm('¿Eliminar este programa? También se eliminarán sus indicadores.')) return
+    if (!confirm('¿Eliminar este programa / iniciativa? También se eliminarán sus indicadores.')) return
     const { error } = await supabase.from('programas').delete().eq('id', id)
     if (!error) setProgramas(programas.filter(p => p.id !== id))
     else alert('Error: ' + error.message)
@@ -242,7 +242,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
             onClick={openCreate}
             className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm"
           >
-            + Nuevo Programa
+            + Nuevo Programa / Iniciativa
           </button>
         </div>
       </div>
@@ -259,7 +259,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
           </thead>
           <tbody className="divide-y divide-gray-100">
             {programasFiltrados.length === 0 ? (
-              <tr><td colSpan={4} className="p-8 text-center text-muted-foreground italic">No hay programas{filtroCiclo ? ' para este ciclo' : ''}.</td></tr>
+              <tr><td colSpan={4} className="p-8 text-center text-muted-foreground italic">No hay programas / iniciativas{filtroCiclo ? ' para este ciclo' : ''}.</td></tr>
             ) : (
               programasFiltrados.map(p => (
                 <tr key={p.id} className="bg-card hover:bg-muted/30">
@@ -284,7 +284,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
         <div className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-card rounded-lg shadow-card border border-border animate-in zoom-in-95 duration-200 max-w-md w-full p-6">
             <h3 className="text-xl font-black text-foreground mb-4">
-              {editTarget ? 'Editar Programa' : 'Nuevo Programa'}
+              {editTarget ? 'Editar Programa / Iniciativa' : 'Nuevo Programa / Iniciativa'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -312,7 +312,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-muted-foreground/80 font-bold px-4 py-2 hover:bg-muted/30 rounded-lg">Cancelar</button>
                 <button type="submit" disabled={isSaving} className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-6 rounded-lg transition-colors disabled:opacity-50">
-                  {isSaving ? 'Guardando...' : editTarget ? 'Guardar Cambios' : 'Crear Programa'}
+                  {isSaving ? 'Guardando...' : editTarget ? 'Guardar Cambios' : 'Crear Programa / Iniciativa'}
                 </button>
               </div>
             </form>

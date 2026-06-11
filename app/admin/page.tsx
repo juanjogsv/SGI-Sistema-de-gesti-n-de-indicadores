@@ -79,7 +79,7 @@ export default async function AdminPage() {
     },
     {
       id: 'programas',
-      label: 'Programas',
+      label: 'Programas / Iniciativas',
       content: (
         <ProgramasClient
           initialProgramas={programas || []}

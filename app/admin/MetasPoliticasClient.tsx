@@ -152,7 +152,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
         </select>
         <select value={filtroPrograma} onChange={e => setFiltroPrograma(e.target.value)}
           className="border border-border rounded-lg p-2 text-sm bg-muted/30 focus:outline-none focus:ring-1 focus:ring-luker-brown">
-          <option value="">Todos los programas</option>
+          <option value="">Todos los programas / iniciativas</option>
           {programasDeCiclo.map(p => <option key={p.id} value={p.id}>{p.nombre}</option>)}
         </select>
         {filtroCiclo && (
@@ -211,7 +211,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
           <thead className="bg-muted/30 border-b border-border">
             <tr>
               <th className="p-4 font-semibold text-muted-foreground/80">Indicador</th>
-              <th className="p-4 font-semibold text-muted-foreground/80">Programa</th>
+              <th className="p-4 font-semibold text-muted-foreground/80">Programa / Iniciativa</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Meta</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Fecha corte</th>
               <th className="p-4 font-semibold text-muted-foreground/80">Pondera</th>
