@@ -173,17 +173,21 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
               indicador_nombre: indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => i.nombre),
               pondera: ['true', 'false']
             }}
-            templateRows={indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => ({
-              indicador_nombre: i.nombre,
-              valor_meta: '',
-              fecha_corte: '',
-              pondera: '',
-              peso_estrategico: '',
-              alfa_exceso: '',
-              tope_maximo: '',
-              umbral_completitud: '',
-              dias_max_retraso: ''
-            }))}
+            templateRows={indicadores.filter(i => programasDeCiclo.some(p => p.id === i.programa_id)).map(i => {
+              const meta = getMeta(i.id)
+              const pol = getPol(i.id)
+              return {
+                indicador_nombre: i.nombre,
+                valor_meta: meta ? meta.valor_meta : '',
+                fecha_corte: meta ? meta.fecha_corte : '',
+                pondera: pol ? (pol.pondera ? 'true' : 'false') : '',
+                peso_estrategico: pol ? pol.peso_estrategico : '',
+                alfa_exceso: pol ? pol.alfa_exceso : '',
+                tope_maximo: pol && pol.tope_maximo !== null ? pol.tope_maximo : '',
+                umbral_completitud: pol ? pol.umbral_completitud : '',
+                dias_max_retraso: pol ? pol.dias_max_retraso : ''
+              }
+            })}
             onImport={async (rows) => {
               let ok = 0; const errors: string[] = []
               for (const row of rows) {

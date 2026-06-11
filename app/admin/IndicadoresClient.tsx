@@ -203,7 +203,17 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 frecuencia_reporte_id: catFrecuencias.map(f => f.nombre),
                 es_inverso: ['true', 'false']
               }}
-              templateRows={programas.map(p => ({
+              templateRows={indicadoresFiltrados.length > 0 ? indicadoresFiltrados.map(i => ({
+                nombre: i.nombre,
+                programa_nombre: programaNombre(i.programa_id),
+                nivel_logico_id: nivelNombre(i.nivel_logico_id),
+                tipo_dato_id: tipoNombre(i.tipo_dato_id),
+                linea_base: i.linea_base,
+                frecuencia_reporte_id: frecNombre(i.frecuencia_reporte_id),
+                es_inverso: i.es_inverso ? 'true' : 'false',
+                observaciones: i.observaciones || '',
+                valor_meta: '', fecha_corte: ''
+              })) : programas.map(p => ({
                 nombre: '', programa_nombre: p.nombre,
                 nivel_logico_id: '', tipo_dato_id: '',
                 linea_base: '', frecuencia_reporte_id: '', es_inverso: '', observaciones: '',
