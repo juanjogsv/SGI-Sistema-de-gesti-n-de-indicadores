@@ -93,6 +93,25 @@ export default async function DashboardPage() {
         iconBgColor="bg-luker-teal"
       />
 
+      <div className="relative overflow-hidden bg-gradient-to-br from-luker-brown via-[#3a1d0b] to-black rounded-2xl p-8 sm:p-12 mt-8 shadow-xl border border-luker-brown/50">
+        {/* Elementos decorativos */}
+        <div className="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-luker-orange opacity-20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 -mb-16 -ml-16 w-48 h-48 bg-luker-green opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 right-1/4 w-32 h-32 bg-luker-teal opacity-20 rounded-full blur-2xl"></div>
+        
+        <div className="relative z-10 max-w-4xl">
+          <span className="inline-block py-1 px-4 rounded-full bg-luker-orange/20 text-luker-orange font-bold text-xs tracking-widest uppercase mb-4 border border-luker-orange/30">
+            Plataforma de Gestión Estratégica
+          </span>
+          <h1 className="text-3xl sm:text-5xl font-black text-white mb-4 leading-tight tracking-tight">
+            Transformando vidas a través <br className="hidden sm:block"/> de la educación
+          </h1>
+          <p className="text-gray-300 text-base sm:text-lg font-medium leading-relaxed max-w-2xl mt-4">
+            Movilizamos palancas para que niños y jóvenes potencien su desarrollo para una vida productiva gratificante.
+          </p>
+        </div>
+      </div>
+
       <div className="px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8 mt-8">
         <Link href="/carga-masiva" className="group">
           <div className="bg-card rounded-lg border border-border p-8 shadow-card hover:shadow-card-hover transition-all flex flex-col items-center text-center h-full">
@@ -127,43 +146,45 @@ export default async function DashboardPage() {
 
       <div className="px-4 sm:px-6 mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex flex-col justify-between">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Programas Activos</p>
-          <p className="text-3xl font-black text-gray-900 mt-2">{totalProg}</p>
+        <div className="bg-card rounded-xl p-5 border border-border shadow-sm flex flex-col justify-between">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Programas Activos</p>
+          <p className="text-3xl font-black text-foreground mt-2">{totalProg}</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex flex-col justify-between">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Indicadores Totales</p>
-          <p className="text-3xl font-black text-gray-900 mt-2">{totalInd}</p>
+        <div className="bg-card rounded-xl p-5 border border-border shadow-sm flex flex-col justify-between">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Indicadores Totales</p>
+          <p className="text-3xl font-black text-foreground mt-2">{totalInd}</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex flex-col justify-between">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Score Global Promedio</p>
-          <p className="text-3xl font-black text-[#1F4E79] mt-2">{avgScore}%</p>
+        <div className="bg-card rounded-xl p-5 border border-border shadow-sm flex flex-col justify-between">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Score Global Promedio</p>
+          <p className="text-3xl font-black text-luker-brown mt-2">{avgScore}%</p>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-red-100 bg-red-50/30 shadow-sm flex flex-col justify-between">
-          <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Indicadores Críticos</p>
-          <p className="text-3xl font-black text-red-600 mt-2">{indsRojos}</p>
+        <div className="bg-luker-red/5 rounded-xl p-5 border border-luker-red/20 shadow-sm flex flex-col justify-between">
+          <p className="text-xs font-bold text-luker-red uppercase tracking-wider">Indicadores Críticos</p>
+          <p className="text-3xl font-black text-luker-red mt-2">{indsRojos}</p>
         </div>
 
       </div>
 
-      {/* 2. Tarjetas de programas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {progs.map(prog => {
-          const score = programScores.find(s => s.programa === prog.nombre)
-          const inds = indList.filter(i => i.programa === prog.nombre)
-          
-          return (
-            <ProgramCard 
-              key={prog.id} 
-              programa={prog} 
-              score={score} 
-              indicadores={inds} 
-            />
-          )
-        })}
+      <div className="mt-12 px-4 sm:px-6">
+        <h3 className="text-2xl font-black text-foreground mb-6">Programas del Ciclo</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {progs.map(prog => {
+            const score = programScores.find(s => s.programa === prog.nombre)
+            const inds = indList.filter(i => i.programa === prog.nombre)
+            
+            return (
+              <ProgramCard 
+                key={prog.id} 
+                programa={prog} 
+                score={score} 
+                indicadores={inds} 
+              />
+            )
+          })}
+        </div>
       </div>
 
     </div>
