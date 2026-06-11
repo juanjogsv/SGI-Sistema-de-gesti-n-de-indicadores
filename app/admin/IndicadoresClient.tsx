@@ -193,6 +193,8 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                 { key: 'frecuencia_reporte_id', header: 'Frecuencia de Reporte', type: 'string' },
                 { key: 'es_inverso', header: 'Es Inverso', type: 'boolean' },
                 { key: 'observaciones', header: 'Observaciones', type: 'string' },
+                { key: 'valor_meta', header: 'Valor Meta (Opcional)', type: 'number' },
+                { key: 'fecha_corte', header: 'Fecha de Corte (Meta)', type: 'date' },
               ]}
               validations={{
                 programa_nombre: programas.map(p => p.nombre),
@@ -204,7 +206,8 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
               templateRows={programas.map(p => ({
                 nombre: '', programa_nombre: p.nombre,
                 nivel_logico_id: '', tipo_dato_id: '',
-                linea_base: '', frecuencia_reporte_id: '', es_inverso: '', observaciones: ''
+                linea_base: '', frecuencia_reporte_id: '', es_inverso: '', observaciones: '',
+                valor_meta: '', fecha_corte: ''
               }))}
             onImport={async (rows) => {
               let ok = 0
@@ -223,7 +226,22 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   observaciones: (row.observaciones as string) || null,
                 }).select().single()
                 if (error) { errors.push(error.message); continue }
-                if (data) { setIndicadores(i => [data, ...i]); ok++ }
+                if (data) { 
+                  setIndicadores(i => [data, ...i])
+                  
+                  // Insert meta if provided
+                  if (row.valor_meta !== undefined && row.valor_meta !== '') {
+                    const { error: metaErr } = await supabase.from('metas').insert({
+                      indicador_id: data.id,
+                      ciclo_id: prog.ciclo_id,
+                      valor_meta: Number(row.valor_meta),
+                      fecha_corte: row.fecha_corte ? String(row.fecha_corte) : new Date().toISOString().split('T')[0]
+                    })
+                    if (metaErr) errors.push(`Error creando meta para ${row.nombre}: ${metaErr.message}`)
+                  }
+                  
+                  ok++ 
+                }
               }
               return { ok, errors }
             }}
