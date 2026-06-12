@@ -49,6 +49,7 @@ export default async function AdminPage() {
     { data: indicadores },
     { data: metas },
     { data: politicas },
+    { data: politicasCiclo },
     { data: catTipos },
     { data: catNiveles },
     { data: catFrecuencias },
@@ -60,6 +61,7 @@ export default async function AdminPage() {
     supabase.from('indicadores').select('*').order('nombre'),
     supabase.from('metas').select('*'),
     supabase.from('politicas_calidad').select('*'),
+    supabase.from('politica_ciclo').select('*'),
     supabase.from('cat_tipos_dato').select('*').order('orden'),
     supabase.from('cat_niveles_logico').select('*').order('orden'),
     supabase.from('cat_frecuencias').select('*').order('orden'),
@@ -103,12 +105,13 @@ export default async function AdminPage() {
       ),
     },
     {
-      id: 'metas',
-      label: 'Metas y Políticas',
+      id: 'politicas',
+      label: 'Políticas',
       content: (
         <MetasPoliticasClient
           initialMetas={metas || []}
           initialPoliticas={politicas || []}
+          initialPoliticasCiclo={politicasCiclo || []}
           indicadores={indicadores || []}
           programas={programas || []}
           ciclos={ciclos || []}

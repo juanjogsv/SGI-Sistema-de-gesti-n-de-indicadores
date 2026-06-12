@@ -48,10 +48,26 @@ export interface Database {
           nombre: string
           eje_trabajo_id: string
           ciclo_id: string
+          umbral_completitud: number
           creado_en: string
         }
-        Insert: Omit<Database['public']['Tables']['programas']['Row'], 'id' | 'creado_en'> & { id?: string, creado_en?: string }
+        Insert: Omit<Database['public']['Tables']['programas']['Row'], 'id' | 'creado_en' | 'umbral_completitud'> & { id?: string, creado_en?: string, umbral_completitud?: number }
         Update: Partial<Database['public']['Tables']['programas']['Insert']>
+      }
+      politica_ciclo: {
+        Row: {
+          id: string
+          ciclo_id: string
+          alfa_exceso: number
+          tope_maximo: number
+          dias_max_retraso: number
+          justificacion: string | null
+          modificado_por: string | null
+          modificado_en: string
+          creado_en: string
+        }
+        Insert: Omit<Database['public']['Tables']['politica_ciclo']['Row'], 'id' | 'modificado_en' | 'creado_en'> & { id?: string, modificado_en?: string, creado_en?: string }
+        Update: Partial<Database['public']['Tables']['politica_ciclo']['Insert']>
       }
       ciclos: {
         Row: {
@@ -97,17 +113,11 @@ export interface Database {
           ciclo_id: string
           pondera: boolean
           peso_estrategico: number
-          alfa_exceso: number
-          tope_maximo: number | null
-          umbral_completitud: number
-          rango_min: number | null
-          rango_max: number | null
-          dias_max_retraso: number
           justificacion: string | null
           modificado_por: string | null
           modificado_en: string
         }
-        Insert: Omit<Database['public']['Tables']['politicas_calidad']['Row'], 'id' | 'pondera' | 'peso_estrategico' | 'alfa_exceso' | 'umbral_completitud' | 'dias_max_retraso' | 'modificado_en'> & { id?: string }
+        Insert: Omit<Database['public']['Tables']['politicas_calidad']['Row'], 'id' | 'pondera' | 'peso_estrategico' | 'modificado_en'> & { id?: string, pondera?: boolean, peso_estrategico?: number }
         Update: Partial<Database['public']['Tables']['politicas_calidad']['Insert']>
       }
       reportes: {
