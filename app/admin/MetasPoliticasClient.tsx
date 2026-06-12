@@ -95,12 +95,20 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
     if (!filtroCiclo) return
     setSavingCiclo(true)
     const existing = getPoliticaCiclo()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const usuarioId = user
+      ? (await supabase.from('usuarios').select('id').eq('auth_user_id', user.id).single()).data?.id ?? null
+      : null
+
     const payload = {
       ciclo_id: filtroCiclo,
       alfa_exceso: cicloForm.alfa_exceso,
       tope_maximo: cicloForm.tope_maximo,
       dias_max_retraso: cicloForm.dias_max_retraso,
       justificacion: cicloForm.justificacion || null,
+      modificado_por: usuarioId,
+      modificado_en: new Date().toISOString(),
     }
     const { data, error } = await supabase
       .from('politica_ciclo')
