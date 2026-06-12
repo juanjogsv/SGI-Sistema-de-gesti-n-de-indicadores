@@ -21,8 +21,11 @@ interface Politica {
 
 interface PoliticaCiclo {
   id: string; ciclo_id: string
+  version: number
+  vigente_desde: string; vigente_hasta: string | null
   alfa_exceso: number; tope_maximo: number; dias_max_retraso: number
   justificacion: string | null
+  creado_por: string | null
 }
 
 interface RowForm {
@@ -79,11 +82,16 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
   const [forms, setForms] = useState<Record<string, RowForm>>({})
   const [saving, setSaving] = useState<string | null>(null)
 
-  // Política general del ciclo
-  const getPoliticaCiclo = () => politicasCiclo.find(pc => pc.ciclo_id === filtroCiclo) ?? null
+  // Política general del ciclo — versión activa (vigente_hasta = null)
+  const getPoliticaCiclo = () =>
+    politicasCiclo.find(pc => pc.ciclo_id === filtroCiclo && pc.vigente_hasta === null) ?? null
+  const getVersionesCiclo = () =>
+    politicasCiclo.filter(pc => pc.ciclo_id === filtroCiclo).sort((a, b) => b.version - a.version)
+
   const [cicloForm, setCicloForm] = useState<CicloForm>(() => defaultCicloForm(null))
   const [editingCiclo, setEditingCiclo] = useState(false)
   const [savingCiclo, setSavingCiclo] = useState(false)
+  const [showVersiones, setShowVersiones] = useState(false)
 
   const openCicloEdit = () => {
     setCicloForm(defaultCicloForm(getPoliticaCiclo()))
@@ -94,33 +102,27 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
     e.preventDefault()
     if (!filtroCiclo) return
     setSavingCiclo(true)
-    const { data: { user } } = await supabase.auth.getUser()
-    const usuarioId = user
-      ? (await supabase.from('usuarios').select('id').eq('auth_user_id', user.id).single()).data?.id ?? null
-      : null
-
-    const payload = {
-      ciclo_id: filtroCiclo,
-      alfa_exceso: cicloForm.alfa_exceso,
-      tope_maximo: cicloForm.tope_maximo,
-      dias_max_retraso: cicloForm.dias_max_retraso,
-      justificacion: cicloForm.justificacion || null,
-      modificado_por: usuarioId,
-      modificado_en: new Date().toISOString(),
-    }
-    const { data, error } = await supabase
-      .from('politica_ciclo')
-      .upsert(payload, { onConflict: 'ciclo_id' })
-      .select()
-      .single()
+    const { data, error } = await supabase.rpc('fn_nueva_version_politica_ciclo', {
+      p_ciclo_id:         filtroCiclo,
+      p_alfa_exceso:      cicloForm.alfa_exceso,
+      p_tope_maximo:      cicloForm.tope_maximo,
+      p_dias_max_retraso: cicloForm.dias_max_retraso,
+      p_justificacion:    cicloForm.justificacion || null,
+    })
     if (error) {
       alert('Error al guardar política del ciclo: ' + error.message)
     } else if (data) {
-      setPoliticasCiclo(prev => {
-        const idx = prev.findIndex(pc => pc.ciclo_id === filtroCiclo)
-        return idx >= 0 ? prev.map((pc, i) => i === idx ? data : pc) : [...prev, data]
-      })
+      // Cerrar versión anterior en el estado local y agregar nueva
+      setPoliticasCiclo(prev => [
+        ...prev.map(pc =>
+          pc.ciclo_id === filtroCiclo && pc.vigente_hasta === null
+            ? { ...pc, vigente_hasta: (data as PoliticaCiclo).vigente_desde }
+            : pc
+        ),
+        data as PoliticaCiclo,
+      ])
       setEditingCiclo(false)
+      setShowVersiones(false)
     }
     setSavingCiclo(false)
   }
@@ -242,18 +244,34 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
         <div className="border border-border rounded-xl overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3 bg-muted/30 border-b border-border">
             <div>
-              <h3 className="text-sm font-black text-foreground">Política General del Ciclo</h3>
+              <h3 className="text-sm font-black text-foreground">
+                Política General del Ciclo
+                {pc && (
+                  <span className="ml-2 text-xs font-normal text-muted-foreground/60 border border-border rounded px-1.5 py-0.5">
+                    v{pc.version}
+                  </span>
+                )}
+              </h3>
               <p className="text-xs text-muted-foreground mt-0.5">Parámetros globales que aplican a todos los indicadores del ciclo seleccionado.</p>
             </div>
             {!editingCiclo && (
-              <button onClick={openCicloEdit}
-                className="text-xs font-bold text-luker-brown hover:underline px-3 py-1.5 border border-luker-brown/30 rounded-lg hover:bg-luker-brown/5 transition-colors">
-                {pc ? 'Editar' : 'Configurar'}
-              </button>
+              <div className="flex gap-2">
+                {getVersionesCiclo().length > 1 && (
+                  <button onClick={() => setShowVersiones(v => !v)}
+                    className="text-xs font-bold text-muted-foreground/70 hover:text-foreground px-3 py-1.5 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                    {showVersiones ? 'Ocultar historial' : `Historial (${getVersionesCiclo().length})`}
+                  </button>
+                )}
+                <button onClick={openCicloEdit}
+                  className="text-xs font-bold text-luker-brown hover:underline px-3 py-1.5 border border-luker-brown/30 rounded-lg hover:bg-luker-brown/5 transition-colors">
+                  {pc ? 'Nueva versión' : 'Configurar'}
+                </button>
+              </div>
             )}
           </div>
 
           {!editingCiclo ? (
+            <>
             <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-border px-0">
               {[
                 { label: 'Alfa Exceso (α)', value: pc ? pc.alfa_exceso : '—', hint: 'Factor compresión' },
@@ -268,6 +286,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                 </div>
               ))}
             </div>
+            </>
           ) : (
             <form onSubmit={handleSaveCiclo} className="px-5 py-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -296,10 +315,45 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                 </button>
                 <button type="submit" disabled={savingCiclo}
                   className="bg-luker-brown hover:bg-luker-brown/90 text-white font-bold py-2 px-6 rounded-lg text-sm transition-colors disabled:opacity-50">
-                  {savingCiclo ? 'Guardando...' : 'Guardar Política del Ciclo'}
+                  {savingCiclo ? 'Guardando...' : 'Crear nueva versión'}
                 </button>
               </div>
             </form>
+          )}
+
+          {/* Historial de versiones */}
+          {showVersiones && !editingCiclo && getVersionesCiclo().length > 1 && (
+            <div className="border-t border-border">
+              <table className="min-w-full text-xs text-left">
+                <thead className="bg-muted/20">
+                  <tr>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Versión</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Vigente desde</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Vigente hasta</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">α</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Tope</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Días gracia</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Justificación</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getVersionesCiclo().map(v => (
+                    <tr key={v.id} className={`border-t border-border ${v.vigente_hasta === null ? 'bg-green-50/50 dark:bg-green-950/10' : ''}`}>
+                      <td className="px-5 py-2 font-bold">
+                        v{v.version}
+                        {v.vigente_hasta === null && <span className="ml-1 text-[10px] text-green-600 font-semibold">activa</span>}
+                      </td>
+                      <td className="px-5 py-2 text-muted-foreground">{new Date(v.vigente_desde).toLocaleString('es-CO')}</td>
+                      <td className="px-5 py-2 text-muted-foreground">{v.vigente_hasta ? new Date(v.vigente_hasta).toLocaleString('es-CO') : '—'}</td>
+                      <td className="px-5 py-2">{v.alfa_exceso}</td>
+                      <td className="px-5 py-2">{v.tope_maximo}%</td>
+                      <td className="px-5 py-2">{v.dias_max_retraso}</td>
+                      <td className="px-5 py-2 text-muted-foreground/70 max-w-[200px] truncate">{v.justificacion || '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       )}

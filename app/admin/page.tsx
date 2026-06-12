@@ -61,7 +61,7 @@ export default async function AdminPage() {
     supabase.from('indicadores').select('*').order('nombre'),
     supabase.from('metas').select('*'),
     supabase.from('politicas_calidad').select('*'),
-    supabase.from('politica_ciclo').select('*'),
+    supabase.from('politica_ciclo').select('*').order('version', { ascending: false }),
     supabase.from('cat_tipos_dato').select('*').order('orden'),
     supabase.from('cat_niveles_logico').select('*').order('orden'),
     supabase.from('cat_frecuencias').select('*').order('orden'),
