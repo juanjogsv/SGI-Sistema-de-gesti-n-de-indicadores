@@ -102,16 +102,18 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
       dias_max_retraso: cicloForm.dias_max_retraso,
       justificacion: cicloForm.justificacion || null,
     }
-    const { data, error } = existing
-      ? await supabase.from('politica_ciclo').update(payload).eq('id', existing.id).select().single()
-      : await supabase.from('politica_ciclo').insert(payload).select().single()
+    const { data, error } = await supabase
+      .from('politica_ciclo')
+      .upsert(payload, { onConflict: 'ciclo_id' })
+      .select()
+      .single()
     if (error) {
       alert('Error al guardar política del ciclo: ' + error.message)
     } else if (data) {
-      setPoliticasCiclo(prev => existing
-        ? prev.map(pc => pc.id === data.id ? data : pc)
-        : [...prev, data]
-      )
+      setPoliticasCiclo(prev => {
+        const idx = prev.findIndex(pc => pc.ciclo_id === filtroCiclo)
+        return idx >= 0 ? prev.map((pc, i) => i === idx ? data : pc) : [...prev, data]
+      })
       setEditingCiclo(false)
     }
     setSavingCiclo(false)
