@@ -3,24 +3,11 @@
 -- Ejecutar en Supabase SQL Editor
 -- ============================================================
 
--- Solo admins y editores pueden insertar/actualizar la política del ciclo
-
-create policy "Admin puede insertar política del ciclo"
-  on public.politica_ciclo for insert
-  with check (
-    exists (
-      select 1 from public.usuarios u
-      where u.auth_user_id = auth.uid()
-        and u.rol_global in ('admin', 'editor')
-    )
-  );
-
-create policy "Admin puede actualizar política del ciclo"
-  on public.politica_ciclo for update
+create policy "Admin modifica política del ciclo"
+  on public.politica_ciclo for all
   using (
-    exists (
-      select 1 from public.usuarios u
-      where u.auth_user_id = auth.uid()
-        and u.rol_global in ('admin', 'editor')
-    )
+    exists (select 1 from public.usuarios where auth_user_id = auth.uid() and rol_global = 'admin')
+  )
+  with check (
+    exists (select 1 from public.usuarios where auth_user_id = auth.uid() and rol_global = 'admin')
   );
