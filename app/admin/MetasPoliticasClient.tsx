@@ -94,8 +94,6 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
     e.preventDefault()
     if (!filtroCiclo) return
     setSavingCiclo(true)
-    const existing = getPoliticaCiclo()
-
     const { data: { user } } = await supabase.auth.getUser()
     const usuarioId = user
       ? (await supabase.from('usuarios').select('id').eq('auth_user_id', user.id).single()).data?.id ?? null
