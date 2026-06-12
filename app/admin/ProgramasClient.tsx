@@ -24,7 +24,6 @@ interface Programa {
   nombre: string
   eje_trabajo_id: string
   ciclo_id: string
-  umbral_completitud: number
 }
 
 interface Props {
@@ -33,7 +32,7 @@ interface Props {
   ciclos: Ciclo[]
 }
 
-const EMPTY_PROG = { nombre: '', eje_trabajo_id: '', ciclo_id: '', umbral_completitud: 0.8 }
+const EMPTY_PROG = { nombre: '', eje_trabajo_id: '', ciclo_id: '' }
 const EMPTY_EJE = { codigo: '', nombre: '', orden: 0 }
 
 export default function ProgramasClient({ initialProgramas, initialEjes, ciclos }: Props) {
@@ -69,7 +68,7 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
   }
   const openEdit = (p: Programa) => {
     setEditTarget(p)
-    setForm({ nombre: p.nombre, eje_trabajo_id: p.eje_trabajo_id, ciclo_id: p.ciclo_id, umbral_completitud: p.umbral_completitud ?? 0.8 })
+    setForm({ nombre: p.nombre, eje_trabajo_id: p.eje_trabajo_id, ciclo_id: p.ciclo_id })
     setIsModalOpen(true)
   }
   const handleSubmit = async (e: React.FormEvent) => {
@@ -314,16 +313,6 @@ export default function ProgramasClient({ initialProgramas, initialEjes, ciclos 
                   <option value="">Selecciona un ciclo...</option>
                   {ciclos.map(c => <option key={c.id} value={c.id}>{c.nombre}</option>)}
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-foreground/90 mb-1">
-                  Umbral de Completitud
-                  <span className="font-normal text-muted-foreground/50 ml-1">(0–1)</span>
-                </label>
-                <input required type="number" step="0.05" min="0" max="1" value={form.umbral_completitud}
-                  onChange={e => setForm({ ...form, umbral_completitud: Number(e.target.value) })}
-                  className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none" />
-                <p className="text-xs text-muted-foreground/50 mt-1">Fracción mínima de indicadores que deben reportar para score válido. Ej: 0.8 = 80%.</p>
               </div>
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-muted-foreground/80 font-bold px-4 py-2 hover:bg-muted/30 rounded-lg">Cancelar</button>

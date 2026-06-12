@@ -24,6 +24,7 @@ interface PoliticaCiclo {
   version: number
   vigente_desde: string; vigente_hasta: string | null
   alfa_exceso: number; tope_maximo: number; dias_max_retraso: number
+  umbral_completitud: number
   justificacion: string | null
   creado_por: string | null
 }
@@ -34,7 +35,8 @@ interface RowForm {
 }
 
 interface CicloForm {
-  alfa_exceso: number; tope_maximo: number; dias_max_retraso: number; justificacion: string
+  alfa_exceso: number; tope_maximo: number; dias_max_retraso: number
+  umbral_completitud: number; justificacion: string
 }
 
 interface Props {
@@ -57,6 +59,7 @@ const defaultCicloForm = (pc: PoliticaCiclo | null): CicloForm => ({
   alfa_exceso: pc?.alfa_exceso ?? 4.5,
   tope_maximo: pc?.tope_maximo ?? 150,
   dias_max_retraso: pc?.dias_max_retraso ?? 5,
+  umbral_completitud: pc?.umbral_completitud ?? 0.8,
   justificacion: pc?.justificacion ?? '',
 })
 
@@ -103,11 +106,12 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
     if (!filtroCiclo) return
     setSavingCiclo(true)
     const { data, error } = await supabase.rpc('fn_nueva_version_politica_ciclo', {
-      p_ciclo_id:         filtroCiclo,
-      p_alfa_exceso:      cicloForm.alfa_exceso,
-      p_tope_maximo:      cicloForm.tope_maximo,
-      p_dias_max_retraso: cicloForm.dias_max_retraso,
-      p_justificacion:    cicloForm.justificacion || null,
+      p_ciclo_id:              filtroCiclo,
+      p_alfa_exceso:           cicloForm.alfa_exceso,
+      p_tope_maximo:           cicloForm.tope_maximo,
+      p_dias_max_retraso:      cicloForm.dias_max_retraso,
+      p_umbral_completitud:    cicloForm.umbral_completitud,
+      p_justificacion:         cicloForm.justificacion || null,
     })
     if (error) {
       alert('Error al guardar política del ciclo: ' + error.message)
@@ -277,6 +281,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                 { label: 'Alfa Exceso (α)', value: pc ? pc.alfa_exceso : '—', hint: 'Factor compresión' },
                 { label: 'Tope Máximo', value: pc ? `${pc.tope_maximo}%` : '—', hint: 'Techo C_efectivo' },
                 { label: 'Días Máx. Retraso', value: pc ? pc.dias_max_retraso : '—', hint: 'Días de gracia' },
+                { label: 'Umbral Completitud', value: pc ? `${Math.round(pc.umbral_completitud * 100)}%` : '—', hint: 'Mín. indicadores con reporte' },
                 { label: 'Justificación', value: pc?.justificacion || '—', hint: '' },
               ].map(({ label, value, hint }) => (
                 <div key={label} className="px-5 py-4">
@@ -289,7 +294,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
             </>
           ) : (
             <form onSubmit={handleSaveCiclo} className="px-5 py-4 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <Field label="Alfa Exceso (α)" hint="compresión del exceso">
                   <input required type="number" step="0.1" min="0" value={cicloForm.alfa_exceso}
                     onChange={e => setCicloForm(f => ({ ...f, alfa_exceso: Number(e.target.value) }))} className={cls} />
@@ -301,6 +306,10 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                 <Field label="Días Máx. Retraso" hint="días de gracia">
                   <input required type="number" min="0" value={cicloForm.dias_max_retraso}
                     onChange={e => setCicloForm(f => ({ ...f, dias_max_retraso: Number(e.target.value) }))} className={cls} />
+                </Field>
+                <Field label="Umbral Completitud" hint="(0–1)">
+                  <input required type="number" step="0.05" min="0" max="1" value={cicloForm.umbral_completitud}
+                    onChange={e => setCicloForm(f => ({ ...f, umbral_completitud: Number(e.target.value) }))} className={cls} />
                 </Field>
               </div>
               <Field label="Justificación" hint="(opcional)">
@@ -333,6 +342,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                     <th className="px-5 py-2 font-semibold text-muted-foreground/70">α</th>
                     <th className="px-5 py-2 font-semibold text-muted-foreground/70">Tope</th>
                     <th className="px-5 py-2 font-semibold text-muted-foreground/70">Días gracia</th>
+                    <th className="px-5 py-2 font-semibold text-muted-foreground/70">Umbral</th>
                     <th className="px-5 py-2 font-semibold text-muted-foreground/70">Justificación</th>
                   </tr>
                 </thead>
@@ -348,6 +358,7 @@ export default function MetasPoliticasClient({ initialMetas, initialPoliticas, i
                       <td className="px-5 py-2">{v.alfa_exceso}</td>
                       <td className="px-5 py-2">{v.tope_maximo}%</td>
                       <td className="px-5 py-2">{v.dias_max_retraso}</td>
+                      <td className="px-5 py-2">{Math.round(v.umbral_completitud * 100)}%</td>
                       <td className="px-5 py-2 text-muted-foreground/70 max-w-[200px] truncate">{v.justificacion || '—'}</td>
                     </tr>
                   ))}

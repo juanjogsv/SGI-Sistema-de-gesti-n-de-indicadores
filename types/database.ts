@@ -48,25 +48,27 @@ export interface Database {
           nombre: string
           eje_trabajo_id: string
           ciclo_id: string
-          umbral_completitud: number
           creado_en: string
         }
-        Insert: Omit<Database['public']['Tables']['programas']['Row'], 'id' | 'creado_en' | 'umbral_completitud'> & { id?: string, creado_en?: string, umbral_completitud?: number }
+        Insert: Omit<Database['public']['Tables']['programas']['Row'], 'id' | 'creado_en'> & { id?: string, creado_en?: string }
         Update: Partial<Database['public']['Tables']['programas']['Insert']>
       }
       politica_ciclo: {
         Row: {
           id: string
           ciclo_id: string
+          version: number
+          vigente_desde: string
+          vigente_hasta: string | null
           alfa_exceso: number
           tope_maximo: number
           dias_max_retraso: number
+          umbral_completitud: number
           justificacion: string | null
-          modificado_por: string | null
-          modificado_en: string
+          creado_por: string | null
           creado_en: string
         }
-        Insert: Omit<Database['public']['Tables']['politica_ciclo']['Row'], 'id' | 'modificado_en' | 'creado_en'> & { id?: string, modificado_en?: string, creado_en?: string }
+        Insert: Omit<Database['public']['Tables']['politica_ciclo']['Row'], 'id' | 'creado_en' | 'version'> & { id?: string, creado_en?: string, version?: number }
         Update: Partial<Database['public']['Tables']['politica_ciclo']['Insert']>
       }
       ciclos: {
