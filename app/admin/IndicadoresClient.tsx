@@ -35,8 +35,17 @@ interface Indicador {
   programa_id: string
 }
 
+interface Meta {
+  id: string
+  indicador_id: string
+  ciclo_id: string
+  valor_meta: number
+  fecha_corte: string
+}
+
 interface Props {
   initialIndicadores: Indicador[]
+  initialMetas: Meta[]
   programas: Programa[]
   ciclos: Ciclo[]
   catTipos: CatItem[]
@@ -53,22 +62,31 @@ const EMPTY_FORM = {
   es_inverso: false,
   observaciones: '',
   programa_id: '',
+  valor_meta: '' as string | number,
+  fecha_corte: '',
 }
 
-export default function IndicadoresClient({ initialIndicadores, programas, ciclos, catTipos, catNiveles, catFrecuencias }: Props) {
+export default function IndicadoresClient({ initialIndicadores, initialMetas, programas, ciclos, catTipos, catNiveles, catFrecuencias }: Props) {
   const supabase = createClient()
   const [indicadores, setIndicadores] = useState<Indicador[]>(initialIndicadores)
+  const [metas, setMetas] = useState<Meta[]>(initialMetas)
   const [filtroCiclo, setFiltroCiclo] = useState<string>(ciclos.find(c => c.activo)?.id ?? '')
   const [filtroPrograma, setFiltroPrograma] = useState<string>('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Indicador | null>(null)
-  const [form, setForm] = useState({ 
-    ...EMPTY_FORM, 
-    nivel_logico_id: catNiveles[0]?.id ?? '', 
-    tipo_dato_id: catTipos[0]?.id ?? '', 
-    frecuencia_reporte_id: catFrecuencias[0]?.id ?? '' 
+  const [form, setForm] = useState({
+    ...EMPTY_FORM,
+    nivel_logico_id: catNiveles[0]?.id ?? '',
+    tipo_dato_id: catTipos[0]?.id ?? '',
+    frecuencia_reporte_id: catFrecuencias[0]?.id ?? ''
   })
   const [isSaving, setIsSaving] = useState(false)
+
+  const getCicloDeProg = (programa_id: string) =>
+    programas.find(p => p.id === programa_id)?.ciclo_id ?? filtroCiclo
+
+  const getMeta = (indicador_id: string, ciclo_id: string) =>
+    metas.find(m => m.indicador_id === indicador_id && m.ciclo_id === ciclo_id) ?? null
 
   const nivelNombre = (id: string) => catNiveles.find(n => n.id === id)?.nombre ?? '—'
   const tipoNombre = (id: string) => catTipos.find(t => t.id === id)?.nombre ?? '—'
@@ -96,12 +114,16 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
       es_inverso: false,
       observaciones: '',
       programa_id: filtroPrograma,
+      valor_meta: '',
+      fecha_corte: '',
     })
     setIsModalOpen(true)
   }
 
   const openEdit = (ind: Indicador) => {
     setEditTarget(ind)
+    const cicloId = getCicloDeProg(ind.programa_id)
+    const meta = getMeta(ind.id, cicloId)
     setForm({
       nombre: ind.nombre,
       nivel_logico_id: ind.nivel_logico_id,
@@ -111,6 +133,8 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
       es_inverso: ind.es_inverso,
       observaciones: ind.observaciones ?? '',
       programa_id: ind.programa_id,
+      valor_meta: meta ? meta.valor_meta : '',
+      fecha_corte: meta ? meta.fecha_corte : '',
     })
     setIsModalOpen(true)
   }
@@ -119,7 +143,7 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
     e.preventDefault()
     setIsSaving(true)
 
-    const payload = {
+    const indPayload = {
       nombre: form.nombre,
       nivel_logico_id: form.nivel_logico_id,
       tipo_dato_id: form.tipo_dato_id,
@@ -130,19 +154,39 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
       programa_id: form.programa_id,
     }
 
+    let indicadorId: string | null = null
+
     if (editTarget) {
-      const { error } = await supabase.from('indicadores').update(payload).eq('id', editTarget.id)
-      if (!error) {
-        setIndicadores(indicadores.map(i => i.id === editTarget.id ? { ...i, ...payload } : i))
-      } else {
-        alert('Error al actualizar: ' + error.message)
-      }
+      const { error } = await supabase.from('indicadores').update(indPayload).eq('id', editTarget.id)
+      if (error) { alert('Error al actualizar: ' + error.message); setIsSaving(false); return }
+      setIndicadores(indicadores.map(i => i.id === editTarget.id ? { ...i, ...indPayload } : i))
+      indicadorId = editTarget.id
     } else {
-      const { data, error } = await supabase.from('indicadores').insert(payload).select().single()
-      if (!error && data) {
-        setIndicadores([data, ...indicadores])
-      } else {
-        alert('Error al crear: ' + error?.message)
+      const { data, error } = await supabase.from('indicadores').insert(indPayload).select().single()
+      if (error || !data) { alert('Error al crear: ' + error?.message); setIsSaving(false); return }
+      setIndicadores([data, ...indicadores])
+      indicadorId = data.id
+    }
+
+    // Guardar meta si se proporcionó valor_meta
+    if (indicadorId && form.valor_meta !== '' && form.fecha_corte) {
+      const cicloId = getCicloDeProg(form.programa_id)
+      if (cicloId) {
+        const existingMeta = getMeta(indicadorId, cicloId)
+        const metaPayload = {
+          indicador_id: indicadorId,
+          ciclo_id: cicloId,
+          valor_meta: Number(form.valor_meta),
+          fecha_corte: form.fecha_corte,
+        }
+        const { data: mData, error: mErr } = existingMeta
+          ? await supabase.from('metas').update(metaPayload).eq('id', existingMeta.id).select().single()
+          : await supabase.from('metas').insert(metaPayload).select().single()
+        if (mErr) alert('Indicador guardado, pero error en meta: ' + mErr.message)
+        else if (mData) setMetas(prev => existingMeta
+          ? prev.map(m => m.id === mData.id ? mData : m)
+          : [...prev, mData]
+        )
       }
     }
 
@@ -410,6 +454,45 @@ export default function IndicadoresClient({ initialIndicadores, programas, ciclo
                   className="w-full border border-border rounded-lg p-2 focus:ring-2 focus:ring-luker-brown focus:outline-none resize-none"
                 />
               </div>
+
+              {/* Meta del ciclo */}
+              <div className="border-t border-border pt-4 mt-2">
+                <p className="text-xs font-black text-muted-foreground uppercase tracking-widest mb-3">
+                  Meta del ciclo
+                  {form.programa_id && (
+                    <span className="ml-2 font-normal normal-case text-muted-foreground/50">
+                      — {ciclos.find(c => c.id === getCicloDeProg(form.programa_id))?.nombre ?? ''}
+                    </span>
+                  )}
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-foreground/80 mb-1">
+                      Valor Meta <span className="font-normal text-muted-foreground/50">(opcional)</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      value={form.valor_meta}
+                      placeholder="—"
+                      onChange={e => setForm({ ...form, valor_meta: e.target.value })}
+                      className="w-full border border-border rounded-lg p-2 text-sm focus:ring-2 focus:ring-luker-brown focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-foreground/80 mb-1">
+                      Fecha de Corte <span className="font-normal text-muted-foreground/50">(opcional)</span>
+                    </label>
+                    <input
+                      type="date"
+                      value={form.fecha_corte}
+                      onChange={e => setForm({ ...form, fecha_corte: e.target.value })}
+                      className="w-full border border-border rounded-lg p-2 text-sm focus:ring-2 focus:ring-luker-brown focus:outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="text-muted-foreground/80 font-bold px-4 py-2 hover:bg-muted/30 rounded-lg">
                   Cancelar

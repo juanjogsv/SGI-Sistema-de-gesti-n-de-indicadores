@@ -96,6 +96,7 @@ export default async function AdminPage() {
       content: (
         <IndicadoresClient
           initialIndicadores={indicadores || []}
+          initialMetas={metas || []}
           programas={programas || []}
           ciclos={ciclos || []}
           catTipos={catTipos || []}
